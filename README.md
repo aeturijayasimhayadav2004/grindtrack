@@ -27,7 +27,10 @@ is persisted, rather than crashing.
 ### Database
 
 Apply the SQL in [`supabase/migrations/`](supabase/migrations/) via the Supabase
-SQL editor. The app expects two tables:
+SQL editor, **in numeric order** — `001` creates `progress`, and `002` alters it,
+so running them out of order fails. Both are safe to re-run.
+
+The app expects two tables:
 
 - `progress` — one row per question per account, keyed by `(user_email, question_id)`
 - `users` — bookkeeping only; records that an email has been seen
