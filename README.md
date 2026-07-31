@@ -97,9 +97,10 @@ Just re-run it, or use `npm run build:clean` — it succeeds within a couple of
 attempts.
 
 `experimental: { workerThreads: false, cpus: 1 }` in `next.config.mjs` was tried
-and **does not fix it** (still failed 1 of 3 clean builds), so it is deliberately
-not configured here. Excluding the project directory and `node_modules` from
-Defender real-time scanning is the more promising avenue if it becomes painful.
+and **does not fix it** — 2 passes / 2 failures across four clean builds, exactly
+matching the 2/2 baseline without it. It is therefore deliberately not configured
+here. Excluding the project directory and `node_modules` from Defender real-time
+scanning is the more promising avenue if it becomes painful.
 
 This has not been observed on Vercel, whose builders are Linux with no real-time
 AV scanner.
