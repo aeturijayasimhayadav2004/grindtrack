@@ -75,16 +75,34 @@ network call to the upstream repo happens during a deploy.
 | `npm run lint` | ESLint |
 | `npm run build:data` | Regenerate the question snapshot from upstream |
 
-### Local builds need a clean `.next`
+### Local builds are flaky on Windows
 
-Running `next build` a second time **over an existing `.next` directory** fails
-locally with `PageNotFoundError: Cannot find module for page: /_not-found`. It is
-a stale-artifact problem, not a code error — the same commit builds cleanly from
-an empty `.next`. Use `npm run build:clean` for repeat local builds.
+`next build` fails intermittently on this Windows machine — roughly one run in
+three, including from a completely empty `.next`. The error varies between runs:
 
-This does not affect Vercel: every deploy starts from a fresh checkout, and
-`build` is left as plain `next build` so Vercel's `.next/cache` restore still
-works.
+```
+PageNotFoundError: Cannot find module for page: /_document
+PageNotFoundError: Cannot find module for page: /_not-found
+Error: Cannot find module './682.js'   (from .next/server/webpack-runtime.js)
+```
+
+It is **not a code error**. Every run reaches `✓ Compiled successfully` and
+passes `Linting and checking validity of types`; the failure always lands later,
+in the "Collecting page data" phase, where Next loads freshly-emitted chunks in
+worker processes. The same commit builds and fails at random with no source
+changes, which points at a file-visibility race between the emitting and loading
+processes (Defender real-time scanning is a common trigger).
+
+Just re-run it, or use `npm run build:clean` — it succeeds within a couple of
+attempts.
+
+`experimental: { workerThreads: false, cpus: 1 }` in `next.config.mjs` was tried
+and **does not fix it** (still failed 1 of 3 clean builds), so it is deliberately
+not configured here. Excluding the project directory and `node_modules` from
+Defender real-time scanning is the more promising avenue if it becomes painful.
+
+This has not been observed on Vercel, whose builders are Linux with no real-time
+AV scanner.
 
 ## A note on access
 
