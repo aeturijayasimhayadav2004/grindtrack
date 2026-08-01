@@ -35,7 +35,9 @@ export function StatusIcon({
       aria-label={`Status: ${LABELS[status]}. Click to change.`}
       title={LABELS[status]}
       className={cn(
-        "inline-flex size-7 items-center justify-center rounded-sm outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring",
+        // 36px on touch screens so the cycle button clears the minimum tap
+        // target; back to the tighter 28px once there's a pointer.
+        "inline-flex size-9 items-center justify-center rounded-sm outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring sm:size-7",
         className,
       )}
     >

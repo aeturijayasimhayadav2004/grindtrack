@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { CompanyMark } from "@/components/company-mark";
 import { useProgress } from "@/hooks/useProgress";
 import { companies, getRandomQuestion, questions } from "@/lib/data";
+import { cn } from "@/lib/utils";
 
 // A few recognisable names to seed the "jump straight in" strip.
 const SHORTCUTS = ["google", "amazon", "meta", "microsoft", "apple", "stripe"];
@@ -46,16 +47,16 @@ export function Dashboard() {
         aria-hidden
       />
 
-      <div className="relative mx-auto max-w-5xl px-5 py-12 sm:px-8 sm:py-16">
+      <div className="relative mx-auto max-w-5xl px-4 py-10 sm:px-8 sm:py-16">
         {/* Hero: copy left, live progress ring right. */}
-        <div className="grid items-center gap-10 md:grid-cols-[1fr_auto]">
+        <div className="grid items-center gap-8 md:grid-cols-[1fr_auto] md:gap-10">
           <header className="animate-rise-in max-w-xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 backdrop-blur">
               <Flame className="size-3.5 text-hot" />
               <span className="label-micro">Personal tracker</span>
             </span>
 
-            <h1 className="mt-5 text-balance font-display text-[2.75rem] font-extrabold leading-[0.98] tracking-[-0.03em] sm:text-6xl">
+            <h1 className="mt-5 text-balance font-display text-[2.25rem] font-extrabold leading-[0.98] tracking-[-0.03em] sm:text-6xl">
               Pick a company.
               <br />
               <span className="text-sweep">Start grinding.</span>
@@ -90,7 +91,7 @@ export function Dashboard() {
 
         {/* Stat trio — each owns a different accent so the row isn't three
             identical grey boxes. */}
-        <div className="mt-14 grid gap-4 sm:grid-cols-3">
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:mt-14 sm:grid-cols-3 sm:gap-4">
           <StatCard
             icon={Layers}
             label="Companies"
@@ -105,18 +106,21 @@ export function Dashboard() {
             tint="var(--hot)"
             delay={240}
           />
+          {/* Odd one out in the two-up mobile grid — let it run full width
+              rather than leave a gap beside it. */}
           <StatCard
             icon={Flame}
             label="In progress"
             value={touched}
             tint="var(--zest)"
             delay={300}
+            className="max-sm:col-span-2"
           />
         </div>
 
         {/* Shortcut strip — the marks give the page actual colour. */}
         {featured.length > 0 && (
-          <section className="animate-rise-in mt-12" style={{ animationDelay: "360ms" }}>
+          <section className="animate-rise-in mt-10 sm:mt-12" style={{ animationDelay: "360ms" }}>
             <h2 className="label-micro">Jump straight in</h2>
             <div className="mt-4 flex flex-wrap gap-2.5">
               {featured.map((c) => (
@@ -158,7 +162,7 @@ function ProgressRing({
   const offset = circumference * (1 - Math.min(100, Math.max(0, pct)) / 100);
 
   return (
-    <div className="relative grid size-56 place-items-center sm:size-64">
+    <div className="relative grid size-48 place-items-center sm:size-64">
       <svg viewBox="0 0 200 200" className="size-full -rotate-90" role="img" aria-label={`${pct.toFixed(1)}% complete`}>
         <defs>
           <linearGradient id="ring-sweep" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -191,7 +195,7 @@ function ProgressRing({
       </svg>
 
       <div className="absolute flex flex-col items-center">
-        <span className="font-display text-4xl font-extrabold tabular-nums sm:text-5xl">
+        <span className="font-display text-3xl font-extrabold tabular-nums sm:text-5xl">
           {completed.toLocaleString()}
         </span>
         <span className="mt-1 font-mono text-[11px] tabular-nums text-muted-foreground">
@@ -211,16 +215,21 @@ function StatCard({
   value,
   tint,
   delay,
+  className,
 }: {
   icon: typeof Layers;
   label: string;
   value: number;
   tint: string;
   delay: number;
+  className?: string;
 }) {
   return (
     <div
-      className="animate-rise-in group relative overflow-hidden rounded-xl border border-border bg-card/70 p-5 backdrop-blur transition-transform hover:-translate-y-0.5"
+      className={cn(
+        "animate-rise-in group relative overflow-hidden rounded-xl border border-border bg-card/70 p-4 backdrop-blur transition-transform hover:-translate-y-0.5 sm:p-5",
+        className,
+      )}
       style={{ animationDelay: `${delay}ms` }}
     >
       <span
@@ -229,7 +238,7 @@ function StatCard({
         aria-hidden
       />
       <Icon className="size-4" style={{ color: tint }} />
-      <div className="mt-3 font-display text-3xl font-extrabold tabular-nums">
+      <div className="mt-3 font-display text-2xl font-extrabold tabular-nums sm:text-3xl">
         {value.toLocaleString()}
       </div>
       <div className="label-micro mt-1.5">{label}</div>

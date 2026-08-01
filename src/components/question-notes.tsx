@@ -56,7 +56,7 @@ export function QuestionNotes({ questionId, title }: { questionId: string; title
           type="button"
           aria-label={hasNotes ? `Edit notes for ${title}` : `Add notes for ${title}`}
           className={cn(
-            "relative inline-flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "relative inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:size-7",
             hasNotes && "text-primary",
           )}
         >
@@ -64,7 +64,9 @@ export function QuestionNotes({ questionId, title }: { questionId: string; title
           {hasNotes && <span className="absolute right-1 top-1 size-1.5 rounded-full bg-primary" />}
         </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-80">
+      {/* 20rem would overhang a 360px screen once the popover is offset from
+          the row, so cap it to the viewport minus a gutter. */}
+      <PopoverContent align="start" className="w-[min(20rem,calc(100vw-2rem))]">
         <p className="mb-2 truncate text-xs font-medium text-muted-foreground">{title}</p>
         <Textarea
           autoFocus
@@ -72,7 +74,9 @@ export function QuestionNotes({ questionId, title }: { questionId: string; title
           onChange={(e) => handleChange(e.target.value)}
           onBlur={flush}
           placeholder="Approach, edge cases, what tripped you up…"
-          className="min-h-28 resize-y text-sm"
+          // text-base below sm: anything smaller makes iOS Safari zoom the
+          // page in on focus and never zoom back out.
+          className="min-h-28 resize-y text-base sm:text-sm"
         />
         <p className="mt-2 text-xs text-muted-foreground">Saves automatically.</p>
       </PopoverContent>

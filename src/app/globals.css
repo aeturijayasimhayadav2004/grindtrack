@@ -163,10 +163,18 @@
   html {
     @apply font-sans;
     -webkit-tap-highlight-color: transparent;
+    /* iOS inflates text when a page rotates to landscape. Opt out so the
+       responsive type scale is the only thing deciding sizes. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground;
+    /* Nothing here is meant to scroll sideways — the question table owns its
+       own horizontal scroller. Anything that overhangs (drifting blobs, wide
+       headlines) must not drag the whole page with it. */
+    overflow-x: hidden;
   }
 
   /* Film grain over everything — keeps the saturated fields from looking flat. */

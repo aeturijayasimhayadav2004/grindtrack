@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, CircleCheckBig, TrendingUp } from "lucide-react";
+import { ArrowUpRight, CircleCheckBig, Download, TrendingUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import {
@@ -21,6 +21,12 @@ const DIFFICULTY_BAR_COLOR: Record<Difficulty, string> = {
   Medium: "bg-amber-500",
   Hard: "bg-red-500",
 };
+
+/** RFC4180: wrap in quotes and double any quote inside. */
+function csvCell(value: string | number | null | undefined): string {
+  const s = value == null ? "" : String(value);
+  return `"${s.replace(/"/g, '""')}"`;
+}
 
 function relativeTime(ts: number): string {
   const diffMs = Date.now() - ts;
@@ -65,6 +71,41 @@ export function ProgressSheet() {
     router.push(`/?company=${company}&highlight=${encodeURIComponent(id)}`);
   }
 
+  /**
+   * Export every touched question as CSV. The progress table is the only thing
+   * here that isn't reproducible from the repo, so being able to get a copy out
+   * matters more than it would for the question data.
+   */
+  function exportCsv() {
+    const rows = Object.entries(progressMap)
+      .filter(([, entry]) => entry.status !== "not-started")
+      .sort((a, b) => b[1].updatedAt - a[1].updatedAt);
+
+    const header = ["question_id", "title", "company", "difficulty", "status", "updated_at", "notes"];
+    const body = rows.map(([id, entry]) => {
+      const q = getQuestionById(id);
+      return [
+        csvCell(id),
+        csvCell(q?.title),
+        csvCell(q?.company),
+        csvCell(q?.difficulty),
+        csvCell(entry.status),
+        csvCell(new Date(entry.updatedAt).toISOString()),
+        csvCell(entry.notes),
+      ].join(",");
+    });
+
+    const csv = [header.map(csvCell).join(","), ...body].join("\r\n");
+    // BOM so Excel reads it as UTF-8 rather than mangling any non-ASCII title.
+    const blob = new Blob([`﻿${csv}`], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `grindtrack-progress-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -79,6 +120,15 @@ export function ProgressSheet() {
             My Progress
           </SheetTitle>
           <SheetDescription>Practice status across every company.</SheetDescription>
+          <button
+            type="button"
+            onClick={exportCsv}
+            disabled={stats.completed + stats.attempted === 0}
+            className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-sm border border-border px-2.5 py-1.5 text-[12px] font-medium outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40"
+          >
+            <Download className="size-3.5" />
+            Export CSV
+          </button>
         </SheetHeader>
 
         <div className="flex flex-col gap-9 overflow-y-auto px-5 pb-8 pt-6">

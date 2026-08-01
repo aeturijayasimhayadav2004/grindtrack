@@ -75,10 +75,13 @@ export function GlobalSearch() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="group flex h-9 w-full min-w-0 max-w-sm items-center gap-2 rounded-sm border border-input bg-background/40 px-2.5 text-left outline-none transition-colors hover:border-primary/50 hover:bg-background focus-visible:ring-2 focus-visible:ring-ring sm:w-72"
+        aria-label={`Search ${questions.length.toLocaleString()} questions`}
+        // Collapses to a square icon button on phones — the full-width field
+        // would squeeze the wordmark and the account controls off the bar.
+        className="group flex size-9 shrink-0 items-center justify-center gap-2 rounded-sm border border-input bg-background/40 text-left outline-none transition-colors hover:border-primary/50 hover:bg-background focus-visible:ring-2 focus-visible:ring-ring sm:w-72 sm:justify-start sm:px-2.5"
       >
-        <Search className="size-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
-        <span className="min-w-0 flex-1 truncate text-[13px] text-muted-foreground">
+        <Search className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary sm:size-3.5" />
+        <span className="hidden min-w-0 flex-1 truncate text-[13px] text-muted-foreground sm:block">
           Search {questions.length.toLocaleString()} questions…
         </span>
         <kbd className="pointer-events-none hidden h-5 min-w-5 shrink-0 items-center justify-center rounded-[3px] border border-border bg-muted px-1 font-mono text-[10px] text-muted-foreground sm:inline-flex">
@@ -93,9 +96,12 @@ export function GlobalSearch() {
       >
         <Command shouldFilter={false}>
           <CommandInput
-            placeholder="Search question titles across all companies…"
+            placeholder="Search question titles…"
             value={query}
             onValueChange={setQuery}
+            // 16px minimum below sm, otherwise iOS Safari zooms into the
+            // dialog on focus and leaves the page scaled.
+            className="text-base sm:text-sm"
           />
           <CommandList>
             {query.trim() === "" ? (

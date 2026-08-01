@@ -18,7 +18,7 @@ export function TopBar({
     <header className="flex h-14 shrink-0 items-stretch border-b border-border bg-background/80 backdrop-blur-md">
       {/* Masthead cell is locked to the sidebar's 18rem so the rail reads as one
           continuous column from the very top of the page. */}
-      <div className="flex shrink-0 items-center gap-2 border-border pl-3 pr-3 md:w-72 md:border-r md:pl-4">
+      <div className="flex min-w-0 shrink items-center gap-2 border-border pl-2 pr-2 md:w-72 md:shrink-0 md:border-r md:pl-4 md:pr-3">
         <Button
           variant="ghost"
           size="icon"
@@ -49,7 +49,7 @@ export function TopBar({
         </button>
       </div>
 
-      <div className="flex min-w-0 flex-1 items-center gap-2 px-3 sm:px-4">
+      <div className="flex min-w-0 flex-1 items-center gap-1 px-2 sm:gap-2 sm:px-4">
         <GlobalSearch />
         <div className="ml-auto flex shrink-0 items-center gap-0.5">
           <ProgressSheet />

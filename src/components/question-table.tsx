@@ -61,10 +61,18 @@ const DIFFICULTY_TOGGLE: Record<Difficulty, string> = {
 };
 
 const DEFAULT_DIFFICULTIES = ALL_DIFFICULTIES;
+const DEFAULT_SORT: SortKey = "frequency";
 // 10 ticks at 3px + 2px gap, minus the trailing gap.
 const METER_WIDTH = 48;
 const STAGGER_ROWS = 14;
 const COLUMN_COUNT = 6;
+// Rows rendered per batch. The big companies run past 2,000 questions, and every
+// row carries a meter, two buttons and a link — mounting them all at once is the
+// difference between an instant table and a locked-up tab on mobile.
+const PAGE_SIZE = 60;
+// Long enough for animate-status-pop to finish, short enough that it never
+// lingers on a row the user has already moved past.
+const POP_MS = 600;
 
 export function QuestionTable({
   companySlug,
@@ -80,11 +88,17 @@ export function QuestionTable({
   const [timeframe, setTimeframe] = useState<TimeframeSlug>("allTime");
   const [statusFilter, setStatusFilter] = useState<"all" | ProgressStatus>("all");
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<SortKey>("frequency");
+  const [sort, setSort] = useState<SortKey>(DEFAULT_SORT);
   const [loading, setLoading] = useState(true);
   const [flashId, setFlashId] = useState<string | null>(null);
+  // The single row that just became "completed". Scoped to one id so the pop
+  // fires on the transition instead of on every finished row at mount.
+  const [poppedId, setPoppedId] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const rowRefs = useRef(new Map<string, HTMLTableRowElement>());
+  const searchRef = useRef<HTMLInputElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   const { getAllProgress, cycleStatus } = useProgress();
   const progressMap = getAllProgress();
@@ -156,6 +170,9 @@ export function QuestionTable({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtered, sort, timeframe, progressMap]);
 
+  const visible = useMemo(() => sorted.slice(0, visibleCount), [sorted, visibleCount]);
+  const hasMore = visibleCount < sorted.length;
+
   useEffect(() => {
     if (!highlightId || loading) return;
     const row = rowRefs.current.get(highlightId);
@@ -164,7 +181,58 @@ export function QuestionTable({
     setFlashId(highlightId);
     const t = setTimeout(() => setFlashId(null), 1600);
     return () => clearTimeout(t);
-  }, [highlightId, sorted, loading]);
+    // Keyed on `visible`, not `sorted`: the row only exists once the batch
+    // window has grown far enough to render it.
+  }, [highlightId, visible, loading]);
+
+  // Any change to the result set puts the user back at the top of it, so the
+  // batch counter has to go back to the top too.
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [companySlug, timeframe, difficulties, statusFilter, search, sort]);
+
+  // Reveal the next batch when the sentinel scrolls into view. rootMargin loads
+  // slightly ahead of the fold so the table rarely shows its own seam.
+  useEffect(() => {
+    if (!hasMore || loading) return;
+    const el = sentinelRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setVisibleCount((n) => Math.min(n + PAGE_SIZE, sorted.length));
+        }
+      },
+      { rootMargin: "600px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [hasMore, loading, sorted.length]);
+
+  // A highlighted question can sit far past the first batch, so grow the window
+  // until it exists before the scroll effect below goes looking for its row.
+  useEffect(() => {
+    if (!highlightId) return;
+    const idx = sorted.findIndex((q) => q.id === highlightId);
+    if (idx >= 0 && idx >= visibleCount) {
+      setVisibleCount(Math.ceil((idx + 1) / PAGE_SIZE) * PAGE_SIZE);
+    }
+  }, [highlightId, sorted, visibleCount]);
+
+  // "/" jumps to the filter box — the one control this view is really built
+  // around. Ignored while already typing so it stays literal in text fields.
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+      const t = e.target as HTMLElement | null;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      e.preventDefault();
+      searchRef.current?.focus();
+      searchRef.current?.select();
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   function toggleDifficulty(d: Difficulty) {
     setDifficulties((prev) => (prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]));
@@ -175,6 +243,21 @@ export function QuestionTable({
     setTimeframe("allTime");
     setStatusFilter("all");
     setSearch("");
+    // Sort is part of what "clear" means here: leaving it behind is the one
+    // piece of state that would survive a reset the user thinks was total.
+    setSort(DEFAULT_SORT);
+  }
+
+  function handleCycle(questionId: string) {
+    const next = cycleStatus(questionId);
+    if (next !== "completed") {
+      setPoppedId((current) => (current === questionId ? null : current));
+      return;
+    }
+    setPoppedId(questionId);
+    window.setTimeout(() => {
+      setPoppedId((current) => (current === questionId ? null : current));
+    }, POP_MS);
   }
 
   const filtersActive =
@@ -290,10 +373,18 @@ export function QuestionTable({
           </Select>
 
           <input
+            ref={searchRef}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search titles…"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                setSearch("");
+                e.currentTarget.blur();
+              }
+            }}
+            placeholder="Search titles…  /"
             aria-label="Search this company's questions"
+            aria-keyshortcuts="/"
             className="h-8 min-w-[160px] flex-1 rounded-sm border border-input bg-background px-2.5 text-base outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:ring-2 focus-visible:ring-ring/25 sm:max-w-[260px] sm:text-sm"
           />
 
@@ -404,7 +495,7 @@ export function QuestionTable({
                 </TableCell>
               </TableRow>
             ) : (
-              sorted.map((q, i) => {
+              visible.map((q, i) => {
                 const status = progressMap[q.id]?.status ?? "not-started";
                 const freq = frequencyFor(q);
                 const isFlashing = flashId === q.id;
@@ -434,8 +525,8 @@ export function QuestionTable({
                       <div className="flex items-center gap-0.5">
                         <StatusIcon
                           status={status}
-                          celebrate={done && isFlashing === false}
-                          onClick={() => cycleStatus(q.id)}
+                          celebrate={poppedId === q.id}
+                          onClick={() => handleCycle(q.id)}
                         />
                         <QuestionNotes questionId={q.id} title={q.title} />
                       </div>
@@ -482,6 +573,23 @@ export function QuestionTable({
             )}
           </TableBody>
         </Table>
+
+        {hasMore && (
+          <div ref={sentinelRef} className="flex flex-col items-center gap-2 py-6">
+            <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
+              {visible.length.toLocaleString()} of {sorted.length.toLocaleString()}
+            </span>
+            {/* The observer normally gets here first; this is the fallback for
+                keyboard users and anyone whose browser withholds the callback. */}
+            <button
+              type="button"
+              onClick={() => setVisibleCount((n) => Math.min(n + PAGE_SIZE, sorted.length))}
+              className="rounded-sm border border-border px-3 py-1.5 text-sm font-medium outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              Show more
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

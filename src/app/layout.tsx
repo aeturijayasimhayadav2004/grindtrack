@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, Manrope, Syne } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -26,6 +26,16 @@ const fontData = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Grindtrack — Company Interview Tracker",
   description: "Personal LeetCode company-wise interview question tracker.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // No maximumScale/userScalable cap — pinch-zoom stays available.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f6fafb" },
+    { media: "(prefers-color-scheme: dark)", color: "#0c1a1f" },
+  ],
 };
 
 export default function RootLayout({

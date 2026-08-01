@@ -52,7 +52,7 @@ export function AppShell() {
           </SheetContent>
         </Sheet>
 
-        <main className="min-w-0 flex-1 overflow-y-auto bg-background">
+        <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain bg-background">
           {company ? (
             <QuestionTable key={company} companySlug={company} highlightId={highlight} />
           ) : (
