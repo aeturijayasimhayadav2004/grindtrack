@@ -28,44 +28,20 @@ export function Dashboard() {
 
   return (
     <div className="relative min-h-full overflow-hidden">
-      {/* Atmosphere layer: mesh wash, dot grid, and two drifting shapes. */}
-      <div className="mesh pointer-events-none absolute inset-0" aria-hidden />
-      <div className="dotgrid pointer-events-none absolute inset-0 opacity-60" aria-hidden />
-      {/* Two slow-drifting light sources, one per support accent. Kept well
-          under half the alpha the original pair ran at, so they colour the
-          field without ever reading as shapes on it. */}
-      <div
-        className="animate-drift pointer-events-none absolute -right-24 top-10 size-72 rounded-full opacity-[0.13]"
-        style={{
-          background: "radial-gradient(circle, var(--hot), transparent 68%)",
-        }}
-        aria-hidden
-      />
-      <div
-        className="animate-drift pointer-events-none absolute -left-20 bottom-0 size-80 rounded-full opacity-[0.11]"
-        style={{
-          background: "radial-gradient(circle, var(--primary), transparent 68%)",
-          animationDelay: "-6s",
-        }}
-        aria-hidden
-      />
-
       <div className="relative mx-auto max-w-5xl px-4 py-10 sm:px-8 sm:py-16">
         {/* Hero: copy left, live progress ring right. */}
         <div className="grid items-center gap-8 md:grid-cols-[1fr_auto] md:gap-10">
           <header className="animate-rise-in max-w-xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 backdrop-blur">
-              <Flame className="size-3.5 text-hot" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1">
+              <Flame className="size-3.5 text-primary" />
               <span className="label-micro">Personal tracker</span>
             </span>
 
-            <h1 className="mt-5 text-balance font-display text-[2.25rem] font-extrabold leading-[0.98] tracking-[-0.03em] sm:text-6xl">
-              Pick a company.
-              <br />
-              <span className="text-sweep">Start grinding.</span>
+            <h1 className="mt-5 text-balance text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+              Pick a company. <span className="text-sweep">Start grinding.</span>
             </h1>
 
-            <p className="mt-5 max-w-md text-pretty text-[15px] leading-relaxed text-muted-foreground">
+            <p className="mt-4 max-w-md text-pretty text-base leading-relaxed text-muted-foreground">
               {questions.length.toLocaleString()} questions across{" "}
               {companies.length.toLocaleString()} companies, ranked by how often they actually
               show up.
@@ -75,7 +51,7 @@ export function Dashboard() {
               <button
                 type="button"
                 onClick={jumpToRandom}
-                className="ring-sweep group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-[oklch(0.17_0.008_250)] outline-none transition-all hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98]"
+                className="group inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground outline-none transition-colors hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <Dices className="size-4 transition-transform duration-300 group-hover:rotate-180" />
                 Random question
@@ -131,7 +107,7 @@ export function Dashboard() {
                   key={c.slug}
                   type="button"
                   onClick={() => router.push(`/?company=${c.slug}`)}
-                  className="group flex items-center gap-2.5 rounded-full border border-border bg-card/70 py-1.5 pl-1.5 pr-4 outline-none backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary/50 focus-visible:ring-2 focus-visible:ring-ring"
+                  className="group flex items-center gap-2.5 rounded-lg border border-border bg-card py-1.5 pl-1.5 pr-4 outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <CompanyMark slug={c.slug} name={c.name} size="md" className="size-8" />
                   <span className="text-left">
@@ -198,7 +174,7 @@ function ProgressRing({
       </svg>
 
       <div className="absolute flex flex-col items-center">
-        <span className="font-display text-3xl font-extrabold tabular-nums sm:text-5xl">
+        <span className="text-3xl font-semibold tabular-nums sm:text-4xl">
           {completed.toLocaleString()}
         </span>
         <span className="mt-1 font-mono text-[11px] tabular-nums text-muted-foreground">
@@ -230,7 +206,7 @@ function StatCard({
   return (
     <div
       className={cn(
-        "animate-rise-in group relative overflow-hidden rounded-xl border border-border bg-card/70 p-4 backdrop-blur transition-transform hover:-translate-y-0.5 sm:p-5",
+        "animate-rise-in group relative overflow-hidden rounded-lg border border-border bg-card p-4 sm:p-5",
         className,
       )}
       style={{ animationDelay: `${delay}ms` }}
@@ -241,7 +217,7 @@ function StatCard({
         aria-hidden
       />
       <Icon className="size-4" style={{ color: tint }} />
-      <div className="mt-3 font-display text-2xl font-extrabold tabular-nums sm:text-3xl">
+      <div className="mt-3 text-2xl font-semibold tabular-nums">
         {value.toLocaleString()}
       </div>
       <div className="label-micro mt-1.5">{label}</div>

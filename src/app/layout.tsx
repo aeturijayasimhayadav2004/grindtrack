@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Manrope, Syne } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,16 +8,12 @@ import { ProgressProvider } from "@/context/ProgressContext";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
-// Manrope: rounded humanist with open counters — friendlier than a neutral
-// grotesque without going soft at the 13px the table runs at.
-const fontUi = Manrope({ subsets: ["latin"], variable: "--font-ui" });
-// Syne: wide, slightly strange display forms. Carries the headlines alone.
-const fontDisplay = Syne({
-  subsets: ["latin"],
-  variable: "--font-display",
-  weight: ["600", "700", "800"],
-});
-const fontData = IBM_Plex_Mono({
+// Inter for everything, headings included. It is the default of the modern web
+// for a reason: nobody has to think about it.
+const fontUi = Inter({ subsets: ["latin"], variable: "--font-ui" });
+const fontDisplay = Inter({ subsets: ["latin"], variable: "--font-display" });
+// Monospace is kept for figures only, so counts and percentages stay aligned.
+const fontData = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-data",
   weight: ["400", "500", "600"],

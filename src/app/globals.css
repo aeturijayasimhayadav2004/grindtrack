@@ -55,40 +55,31 @@
 
 @layer base {
   :root {
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* One hue (250, cool graphite) at near-zero chroma carries the entire
-       system. Nothing in the UI is allowed a second hue: hierarchy is built
-       from luminance, weight and space instead. Light mode is the secondary
-       reading here — the app is designed dark first. */
-    --background: oklch(0.974 0.002 250);
-    --foreground: oklch(0.195 0.008 250);
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.21 0.005 285);
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.195 0.008 250);
+    --card-foreground: oklch(0.21 0.005 285);
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.195 0.008 250);
+    --popover-foreground: oklch(0.21 0.005 285);
 
-    /* "Primary" is simply the darkest ink step — an emphasis level, not a
-       colour. --hot and --zest survive as names so existing call sites keep
-       working, but they are now just two rungs down the same ladder. */
-    --primary: oklch(0.55 0.11 195);
-    --primary-foreground: oklch(0.99 0.005 200);
-    --hot: oklch(0.56 0.14 25);
-    --zest: oklch(0.68 0.11 85);
+    --primary: oklch(0.55 0.2 258);
+    --primary-foreground: oklch(0.99 0.004 258);
+    --hot: oklch(0.55 0.21 300);
+    --zest: oklch(0.6 0.14 160);
 
-    --secondary: oklch(0.945 0.003 250);
-    --secondary-foreground: oklch(0.28 0.008 250);
-    --muted: oklch(0.945 0.003 250);
-    --muted-foreground: oklch(0.505 0.007 250);
-    --accent: oklch(0.915 0.005 250);
-    --accent-foreground: oklch(0.22 0.01 250);
-    /* The one permitted deviation: destructive keeps a trace of clay so a
-       irreversible action never reads as ordinary text. */
-    --destructive: oklch(0.52 0.1 25);
-    --destructive-foreground: oklch(0.98 0.002 250);
-    --border: oklch(0.888 0.004 250);
-    --input: oklch(0.865 0.005 250);
-    --ring: oklch(0.55 0.11 195);
+    --secondary: oklch(0.967 0.002 285);
+    --secondary-foreground: oklch(0.27 0.006 285);
+    --muted: oklch(0.967 0.002 285);
+    --muted-foreground: oklch(0.53 0.008 285);
+    --accent: oklch(0.955 0.003 285);
+    --accent-foreground: oklch(0.24 0.006 285);
+    --destructive: oklch(0.56 0.22 25);
+    --destructive-foreground: oklch(0.99 0.002 285);
+    --border: oklch(0.91 0.004 285);
+    --input: oklch(0.89 0.005 285);
+    --ring: oklch(0.55 0.2 258);
 
     --chart-1: oklch(0.24 0.009 250);
     --chart-2: oklch(0.4 0.008 250);
@@ -96,54 +87,47 @@
     --chart-4: oklch(0.7 0.005 250);
     --chart-5: oklch(0.82 0.004 250);
 
-    --sidebar: oklch(0.956 0.003 250);
-    --sidebar-foreground: oklch(0.195 0.008 250);
-    --sidebar-primary: oklch(0.55 0.11 195);
-    --sidebar-primary-foreground: oklch(0.99 0.005 200);
-    --sidebar-accent: oklch(0.9 0.022 200);
-    --sidebar-accent-foreground: oklch(0.2 0.02 205);
-    --sidebar-border: oklch(0.888 0.004 250);
-    --sidebar-ring: oklch(0.55 0.11 195);
-
-    --grain-opacity: 0.24;
-    --grain-blend: multiply;
-    --dot-color: oklch(0.195 0.008 250 / 6%);
-    --mesh-a: oklch(0.55 0.11 195 / 14%);
-    --mesh-b: oklch(0.56 0.14 25 / 9%);
-    --mesh-c: oklch(0.68 0.11 85 / 9%);
+    --sidebar: oklch(0.985 0.001 285);
+    --sidebar-foreground: oklch(0.21 0.005 285);
+    --sidebar-primary: oklch(0.55 0.2 258);
+    --sidebar-primary-foreground: oklch(0.99 0.004 258);
+    --sidebar-accent: oklch(0.955 0.003 285);
+    --sidebar-accent-foreground: oklch(0.24 0.006 285);
+    --sidebar-border: oklch(0.91 0.004 285);
+    --sidebar-ring: oklch(0.55 0.2 258);
   }
 
   .dark {
     /* The primary reading. Graphite, not black — a true #000 field would kill
        the grain and flatten every hairline on it. The steps below are spaced
        so surfaces separate on luminance alone, with no borders required. */
-    --background: oklch(0.155 0.006 250);
-    --foreground: oklch(0.965 0.003 250);
-    --card: oklch(0.196 0.007 250);
-    --card-foreground: oklch(0.965 0.003 250);
-    --popover: oklch(0.216 0.008 250);
-    --popover-foreground: oklch(0.965 0.003 250);
+    --background: oklch(0.165 0.004 285);
+    --foreground: oklch(0.97 0.002 285);
+    --card: oklch(0.205 0.005 285);
+    --card-foreground: oklch(0.97 0.002 285);
+    --popover: oklch(0.205 0.005 285);
+    --popover-foreground: oklch(0.97 0.002 285);
 
-    /* Colour is rationed, not banned. One lead accent plus two supports, all
-       held near half the chroma the original palette ran at, so they read as
-       lit metal on graphite rather than as paint. Surfaces and body text stay
-       achromatic — only things you can act on are allowed a hue. */
-    --primary: oklch(0.79 0.115 195);
-    --primary-foreground: oklch(0.17 0.02 200);
-    --hot: oklch(0.73 0.125 25);
-    --zest: oklch(0.84 0.105 85);
+    /* Standard product-UI accent: a blue for anything interactive, plus a
+       violet and a green used only on the dashboard stat tiles. */
+    --primary: oklch(0.62 0.185 258);
+    --primary-foreground: oklch(0.98 0.004 258);
+    --hot: oklch(0.62 0.19 300);
+    --zest: oklch(0.7 0.15 160);
 
-    --secondary: oklch(0.256 0.007 250);
-    --secondary-foreground: oklch(0.95 0.003 250);
-    --muted: oklch(0.256 0.007 250);
-    --muted-foreground: oklch(0.685 0.006 250);
-    --accent: oklch(0.302 0.008 250);
-    --accent-foreground: oklch(0.97 0.003 250);
-    --destructive: oklch(0.68 0.17 25);
-    --destructive-foreground: oklch(0.98 0.002 250);
-    --border: oklch(0.85 0.01 250 / 12%);
-    --input: oklch(0.85 0.01 250 / 16%);
-    --ring: oklch(0.79 0.115 195);
+    --secondary: oklch(0.26 0.006 285);
+    --secondary-foreground: oklch(0.96 0.002 285);
+    --muted: oklch(0.26 0.006 285);
+    --muted-foreground: oklch(0.705 0.008 285);
+    --accent: oklch(0.28 0.006 285);
+    --accent-foreground: oklch(0.97 0.002 285);
+    --destructive: oklch(0.62 0.2 25);
+    --destructive-foreground: oklch(0.98 0.002 285);
+    /* Solid borders rather than translucent ones — ordinary, and they survive
+       being stacked over a card. */
+    --border: oklch(0.3 0.006 285);
+    --input: oklch(0.33 0.007 285);
+    --ring: oklch(0.62 0.185 258);
 
     --chart-1: oklch(0.96 0.003 250);
     --chart-2: oklch(0.82 0.004 250);
@@ -151,25 +135,14 @@
     --chart-4: oklch(0.54 0.007 250);
     --chart-5: oklch(0.4 0.008 250);
 
-    /* Sidebar sits below the background rather than above it, so the rail
-       reads as a recess and the table is the lit surface. */
-    --sidebar: oklch(0.128 0.006 250);
-    --sidebar-foreground: oklch(0.955 0.003 250);
-    --sidebar-primary: oklch(0.79 0.115 195);
-    --sidebar-primary-foreground: oklch(0.17 0.02 200);
-    --sidebar-accent: oklch(0.272 0.014 210);
-    --sidebar-accent-foreground: oklch(0.975 0.003 250);
-    --sidebar-border: oklch(0.85 0.01 250 / 12%);
-    --sidebar-ring: oklch(0.79 0.115 195);
-
-    --grain-opacity: 0.16;
-    --grain-blend: overlay;
-    --dot-color: oklch(0.9 0.006 250 / 6%);
-    /* The mesh is where the accents get to be generous — large, soft and far
-       below the content, so they tint the field without competing with it. */
-    --mesh-a: oklch(0.79 0.115 195 / 14%);
-    --mesh-b: oklch(0.73 0.125 25 / 10%);
-    --mesh-c: oklch(0.84 0.105 85 / 7%);
+    --sidebar: oklch(0.185 0.004 285);
+    --sidebar-foreground: oklch(0.96 0.002 285);
+    --sidebar-primary: oklch(0.62 0.185 258);
+    --sidebar-primary-foreground: oklch(0.98 0.004 258);
+    --sidebar-accent: oklch(0.28 0.006 285);
+    --sidebar-accent-foreground: oklch(0.97 0.002 285);
+    --sidebar-border: oklch(0.3 0.006 285);
+    --sidebar-ring: oklch(0.62 0.185 258);
   }
 
   * {
@@ -193,18 +166,6 @@
     overflow-x: hidden;
   }
 
-  /* Film grain over everything — keeps the saturated fields from looking flat. */
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: var(--grain-opacity);
-    mix-blend-mode: var(--grain-blend);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.2'/%3E%3C/svg%3E");
-  }
-
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -222,64 +183,41 @@
     text-wrap: balance;
   }
 
+  /* Ordinary small section label. Was a wide-tracked monospace caption; that
+     was the single most "designed" thing on the page. */
   .label-micro {
-    font-family: var(--font-data), ui-monospace, monospace;
-    font-size: 0.625rem;
-    line-height: 1;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    font-weight: 500;
     color: var(--muted-foreground);
   }
 
-  /* Three-point radial mesh. Static gradients only — no blur filter, so it
-     costs nothing to scroll over. */
-  .mesh {
-    background-image:
-      radial-gradient(ellipse 70% 60% at 8% 0%, var(--mesh-a), transparent 60%),
-      radial-gradient(ellipse 60% 55% at 95% 8%, var(--mesh-b), transparent 62%),
-      radial-gradient(ellipse 80% 50% at 45% 100%, var(--mesh-c), transparent 65%);
-  }
-
+  /* The decorative layers are gone. These two are kept as no-ops so any
+     stragglers render as plain background rather than throwing. */
+  .mesh,
   .dotgrid {
-    background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
-    background-size: 22px 22px;
-    background-position: -1px -1px;
+    background-image: none;
   }
 
   .tick-track {
-    background-image: repeating-linear-gradient(
-      to right,
-      currentColor 0 3px,
-      transparent 3px 5px
-    );
+    background-color: currentColor;
+    border-radius: 9999px;
   }
 
   /* Headline treatment. Was a teal-to-magenta sweep; it is now a fall of light
      across the word — full-strength ink at the start, dropping about two rungs
      by the end. Reads as depth, not as colour. */
+  /* Plain accent text. Gradient headlines are the first thing that dates a
+     page, and this one was carrying the whole hero. */
   .text-sweep {
-    background-image: linear-gradient(
-      100deg,
-      var(--foreground) 0%,
-      var(--foreground) 22%,
-      var(--primary) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--primary);
   }
 
   /* Brushed-metal fill for the mark and the single primary button. The bright
      band sits off-centre so it reads as a machined surface catching light
      rather than a flat gradient. */
   .ring-sweep {
-    background-image: linear-gradient(
-      135deg,
-      var(--zest) 0%,
-      var(--primary) 45%,
-      var(--hot) 100%
-    );
+    background-color: var(--primary);
   }
 
   @keyframes status-pop {

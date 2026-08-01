@@ -273,7 +273,6 @@ export function QuestionTable({
     <div className="flex min-h-full flex-col">
       {/* Company masthead */}
       <div className="relative overflow-hidden px-4 pb-6 pt-6 sm:px-7 sm:pt-8">
-        <div className="mesh pointer-events-none absolute inset-0 opacity-70" aria-hidden />
         <div className="relative flex items-center gap-4">
           <CompanyMark
             slug={companySlug}
@@ -283,7 +282,7 @@ export function QuestionTable({
           />
           <div className="min-w-0">
             <span className="label-micro">Company</span>
-            <h1 className="mt-1 text-balance font-display text-3xl font-extrabold leading-none tracking-[-0.03em] sm:text-[2.5rem]">
+            <h1 className="mt-1 text-balance text-2xl font-semibold tracking-tight sm:text-3xl">
               {company?.name ?? companySlug}
             </h1>
           </div>
