@@ -57,103 +57,117 @@
   :root {
     --radius: 0.75rem;
 
-    /* Light: cool porcelain with a faint teal cast. */
-    --background: oklch(0.985 0.009 200);
-    --foreground: oklch(0.205 0.032 225);
+    /* One hue (250, cool graphite) at near-zero chroma carries the entire
+       system. Nothing in the UI is allowed a second hue: hierarchy is built
+       from luminance, weight and space instead. Light mode is the secondary
+       reading here — the app is designed dark first. */
+    --background: oklch(0.974 0.002 250);
+    --foreground: oklch(0.195 0.008 250);
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.205 0.032 225);
+    --card-foreground: oklch(0.195 0.008 250);
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.205 0.032 225);
+    --popover-foreground: oklch(0.195 0.008 250);
 
-    /* Electric teal lead + hot magenta and citrus as co-accents. Deliberately
-       clear of the green/amber/red the difficulty badges own. */
-    --primary: oklch(0.605 0.135 205);
-    --primary-foreground: oklch(0.99 0.005 200);
-    --hot: oklch(0.585 0.235 355);
-    --zest: oklch(0.72 0.16 88);
+    /* "Primary" is simply the darkest ink step — an emphasis level, not a
+       colour. --hot and --zest survive as names so existing call sites keep
+       working, but they are now just two rungs down the same ladder. */
+    --primary: oklch(0.3 0.01 250);
+    --primary-foreground: oklch(0.98 0.002 250);
+    --hot: oklch(0.45 0.008 250);
+    --zest: oklch(0.6 0.006 250);
 
-    --secondary: oklch(0.955 0.014 205);
-    --secondary-foreground: oklch(0.28 0.035 220);
-    --muted: oklch(0.952 0.013 205);
-    --muted-foreground: oklch(0.505 0.03 220);
-    --accent: oklch(0.935 0.035 200);
-    --accent-foreground: oklch(0.25 0.04 215);
-    --destructive: oklch(0.56 0.225 25);
-    --destructive-foreground: oklch(0.99 0.005 200);
-    --border: oklch(0.9 0.017 210);
-    --input: oklch(0.885 0.02 210);
-    --ring: oklch(0.605 0.135 205);
+    --secondary: oklch(0.945 0.003 250);
+    --secondary-foreground: oklch(0.28 0.008 250);
+    --muted: oklch(0.945 0.003 250);
+    --muted-foreground: oklch(0.505 0.007 250);
+    --accent: oklch(0.915 0.005 250);
+    --accent-foreground: oklch(0.22 0.01 250);
+    /* The one permitted deviation: destructive keeps a trace of clay so a
+       irreversible action never reads as ordinary text. */
+    --destructive: oklch(0.52 0.1 25);
+    --destructive-foreground: oklch(0.98 0.002 250);
+    --border: oklch(0.888 0.004 250);
+    --input: oklch(0.865 0.005 250);
+    --ring: oklch(0.4 0.01 250);
 
-    --chart-1: oklch(0.62 0.17 150);
-    --chart-2: oklch(0.72 0.16 88);
-    --chart-3: oklch(0.58 0.22 27);
-    --chart-4: oklch(0.605 0.135 205);
-    --chart-5: oklch(0.585 0.235 355);
+    --chart-1: oklch(0.24 0.009 250);
+    --chart-2: oklch(0.4 0.008 250);
+    --chart-3: oklch(0.56 0.007 250);
+    --chart-4: oklch(0.7 0.005 250);
+    --chart-5: oklch(0.82 0.004 250);
 
-    --sidebar: oklch(0.968 0.013 205);
-    --sidebar-foreground: oklch(0.205 0.032 225);
-    --sidebar-primary: oklch(0.605 0.135 205);
-    --sidebar-primary-foreground: oklch(0.99 0.005 200);
-    --sidebar-accent: oklch(0.925 0.04 200);
-    --sidebar-accent-foreground: oklch(0.24 0.045 212);
-    --sidebar-border: oklch(0.9 0.017 210);
-    --sidebar-ring: oklch(0.605 0.135 205);
+    --sidebar: oklch(0.956 0.003 250);
+    --sidebar-foreground: oklch(0.195 0.008 250);
+    --sidebar-primary: oklch(0.3 0.01 250);
+    --sidebar-primary-foreground: oklch(0.98 0.002 250);
+    --sidebar-accent: oklch(0.905 0.005 250);
+    --sidebar-accent-foreground: oklch(0.2 0.01 250);
+    --sidebar-border: oklch(0.888 0.004 250);
+    --sidebar-ring: oklch(0.4 0.01 250);
 
-    --grain-opacity: 0.32;
+    --grain-opacity: 0.24;
     --grain-blend: multiply;
-    --dot-color: oklch(0.205 0.032 225 / 8%);
-    --mesh-a: oklch(0.605 0.135 205 / 22%);
-    --mesh-b: oklch(0.585 0.235 355 / 16%);
-    --mesh-c: oklch(0.72 0.16 88 / 18%);
+    --dot-color: oklch(0.195 0.008 250 / 6%);
+    /* The mesh is now a light source, not a colour wash — three greys at
+       single-digit alpha, just enough to keep large fields from going flat. */
+    --mesh-a: oklch(0.35 0.01 250 / 7%);
+    --mesh-b: oklch(0.35 0.01 250 / 5%);
+    --mesh-c: oklch(0.35 0.01 250 / 4%);
   }
 
   .dark {
-    /* Deep petrol — a blue-green black, not the usual neutral slate. */
-    --background: oklch(0.185 0.032 210);
-    --foreground: oklch(0.965 0.012 200);
-    --card: oklch(0.232 0.036 210);
-    --card-foreground: oklch(0.965 0.012 200);
-    --popover: oklch(0.245 0.038 210);
-    --popover-foreground: oklch(0.965 0.012 200);
+    /* The primary reading. Graphite, not black — a true #000 field would kill
+       the grain and flatten every hairline on it. The steps below are spaced
+       so surfaces separate on luminance alone, with no borders required. */
+    --background: oklch(0.155 0.006 250);
+    --foreground: oklch(0.965 0.003 250);
+    --card: oklch(0.196 0.007 250);
+    --card-foreground: oklch(0.965 0.003 250);
+    --popover: oklch(0.216 0.008 250);
+    --popover-foreground: oklch(0.965 0.003 250);
 
-    --primary: oklch(0.825 0.145 195);
-    --primary-foreground: oklch(0.165 0.04 210);
-    --hot: oklch(0.735 0.215 352);
-    --zest: oklch(0.855 0.165 92);
+    /* Emphasis runs toward light here, the inverse of the light theme. Bone is
+       the loudest thing the interface can say. */
+    --primary: oklch(0.92 0.004 250);
+    --primary-foreground: oklch(0.17 0.008 250);
+    --hot: oklch(0.72 0.005 250);
+    --zest: oklch(0.82 0.004 250);
 
-    --secondary: oklch(0.285 0.038 210);
-    --secondary-foreground: oklch(0.965 0.012 200);
-    --muted: oklch(0.285 0.038 210);
-    --muted-foreground: oklch(0.72 0.028 205);
-    --accent: oklch(0.335 0.055 205);
-    --accent-foreground: oklch(0.965 0.012 200);
-    --destructive: oklch(0.72 0.19 25);
-    --destructive-foreground: oklch(0.99 0.005 200);
-    --border: oklch(0.85 0.05 200 / 15%);
-    --input: oklch(0.85 0.05 200 / 20%);
-    --ring: oklch(0.825 0.145 195);
+    --secondary: oklch(0.256 0.007 250);
+    --secondary-foreground: oklch(0.95 0.003 250);
+    --muted: oklch(0.256 0.007 250);
+    --muted-foreground: oklch(0.685 0.006 250);
+    --accent: oklch(0.302 0.008 250);
+    --accent-foreground: oklch(0.97 0.003 250);
+    --destructive: oklch(0.66 0.075 25);
+    --destructive-foreground: oklch(0.98 0.002 250);
+    --border: oklch(0.85 0.01 250 / 12%);
+    --input: oklch(0.85 0.01 250 / 16%);
+    --ring: oklch(0.85 0.006 250);
 
-    --chart-1: oklch(0.76 0.19 150);
-    --chart-2: oklch(0.855 0.165 92);
-    --chart-3: oklch(0.7 0.2 27);
-    --chart-4: oklch(0.825 0.145 195);
-    --chart-5: oklch(0.735 0.215 352);
+    --chart-1: oklch(0.96 0.003 250);
+    --chart-2: oklch(0.82 0.004 250);
+    --chart-3: oklch(0.68 0.006 250);
+    --chart-4: oklch(0.54 0.007 250);
+    --chart-5: oklch(0.4 0.008 250);
 
-    --sidebar: oklch(0.158 0.03 212);
-    --sidebar-foreground: oklch(0.965 0.012 200);
-    --sidebar-primary: oklch(0.825 0.145 195);
-    --sidebar-primary-foreground: oklch(0.165 0.04 210);
-    --sidebar-accent: oklch(0.315 0.06 203);
-    --sidebar-accent-foreground: oklch(0.975 0.012 200);
-    --sidebar-border: oklch(0.85 0.05 200 / 15%);
-    --sidebar-ring: oklch(0.825 0.145 195);
+    /* Sidebar sits below the background rather than above it, so the rail
+       reads as a recess and the table is the lit surface. */
+    --sidebar: oklch(0.128 0.006 250);
+    --sidebar-foreground: oklch(0.955 0.003 250);
+    --sidebar-primary: oklch(0.92 0.004 250);
+    --sidebar-primary-foreground: oklch(0.17 0.008 250);
+    --sidebar-accent: oklch(0.272 0.008 250);
+    --sidebar-accent-foreground: oklch(0.975 0.003 250);
+    --sidebar-border: oklch(0.85 0.01 250 / 12%);
+    --sidebar-ring: oklch(0.85 0.006 250);
 
-    --grain-opacity: 0.2;
+    --grain-opacity: 0.16;
     --grain-blend: overlay;
-    --dot-color: oklch(0.9 0.05 200 / 9%);
-    --mesh-a: oklch(0.825 0.145 195 / 20%);
-    --mesh-b: oklch(0.735 0.215 352 / 18%);
-    --mesh-c: oklch(0.855 0.165 92 / 12%);
+    --dot-color: oklch(0.9 0.006 250 / 6%);
+    --mesh-a: oklch(0.92 0.006 250 / 7%);
+    --mesh-b: oklch(0.92 0.006 250 / 5%);
+    --mesh-c: oklch(0.92 0.006 250 / 3%);
   }
 
   * {
@@ -239,17 +253,32 @@
     );
   }
 
-  /* Headline treatment: teal -> magenta sweep. Used only on the two hero
-     words, never on body copy. */
+  /* Headline treatment. Was a teal-to-magenta sweep; it is now a fall of light
+     across the word — full-strength ink at the start, dropping about two rungs
+     by the end. Reads as depth, not as colour. */
   .text-sweep {
-    background-image: linear-gradient(100deg, var(--primary) 0%, var(--hot) 55%, var(--zest) 100%);
+    background-image: linear-gradient(
+      100deg,
+      var(--foreground) 0%,
+      var(--foreground) 30%,
+      var(--muted-foreground) 100%
+    );
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
 
+  /* Brushed-metal fill for the mark and the single primary button. The bright
+     band sits off-centre so it reads as a machined surface catching light
+     rather than a flat gradient. */
   .ring-sweep {
-    background-image: linear-gradient(135deg, var(--primary), var(--hot) 60%, var(--zest));
+    background-image: linear-gradient(
+      135deg,
+      oklch(0.99 0.002 250) 0%,
+      oklch(0.86 0.005 250) 38%,
+      oklch(0.66 0.007 250) 62%,
+      oklch(0.9 0.004 250) 100%
+    );
   }
 
   @keyframes status-pop {

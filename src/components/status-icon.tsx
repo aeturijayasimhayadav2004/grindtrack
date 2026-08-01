@@ -45,10 +45,12 @@ export function StatusIcon({
         className={cn(
           "size-4 transition-colors duration-200",
           // Idle circles stay very quiet — with thousands of rows a bright
-          // "empty" state turns the whole column into visual noise.
-          status === "not-started" && "text-muted-foreground/35",
-          status === "attempted" && "text-amber-500 dark:text-amber-400",
-          status === "completed" && "text-emerald-600 dark:text-emerald-400",
+          // "empty" state turns the whole column into visual noise. Progress
+          // now reads as the icon coming up out of the page rather than as a
+          // change of hue; the glyph itself already differs per state.
+          status === "not-started" && "text-muted-foreground/30",
+          status === "attempted" && "text-muted-foreground",
+          status === "completed" && "text-foreground",
           celebrate && "animate-status-pop",
         )}
         strokeWidth={2.25}

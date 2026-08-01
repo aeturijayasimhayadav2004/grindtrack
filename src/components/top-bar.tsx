@@ -35,7 +35,7 @@ export function TopBar({
           className="group flex min-w-0 items-center gap-2.5 rounded-sm py-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <span
-            className="ring-sweep grid size-8 shrink-0 place-items-center rounded-lg font-mono text-[14px] font-bold text-[oklch(0.16_0.04_210)] transition-transform duration-200 group-hover:-rotate-6"
+            className="ring-sweep grid size-8 shrink-0 place-items-center rounded-lg font-mono text-[14px] font-bold text-[oklch(0.17_0.008_250)] transition-transform duration-200 group-hover:-rotate-6"
             aria-hidden
           >
             G

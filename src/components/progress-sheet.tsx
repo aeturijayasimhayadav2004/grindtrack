@@ -16,10 +16,12 @@ import { useProgress } from "@/hooks/useProgress";
 import { getQuestionById } from "@/lib/data";
 import type { Difficulty } from "@/lib/types";
 
+// Same ladder as the badges: the stacked bar separates on weight of ink, so
+// the segments stay distinguishable in greyscale and for colour deficiency.
 const DIFFICULTY_BAR_COLOR: Record<Difficulty, string> = {
-  Easy: "bg-green-500",
-  Medium: "bg-amber-500",
-  Hard: "bg-red-500",
+  Easy: "bg-foreground/30",
+  Medium: "bg-foreground/60",
+  Hard: "bg-foreground",
 };
 
 /** RFC4180: wrap in quotes and double any quote inside. */
@@ -134,15 +136,11 @@ export function ProgressSheet() {
         <div className="flex flex-col gap-9 overflow-y-auto px-5 pb-8 pt-6">
           {/* Hairline ledger instead of three bordered tiles. */}
           <div className="flex flex-col">
-            <LedgerStat
-              label="Completed"
-              value={stats.completed}
-              tone="text-emerald-600 dark:text-emerald-400"
-            />
+            <LedgerStat label="Completed" value={stats.completed} tone="text-foreground" />
             <LedgerStat
               label="Attempted"
               value={stats.attempted}
-              tone="text-amber-600 dark:text-amber-400"
+              tone="text-muted-foreground"
             />
             <LedgerStat
               label="Not started"
@@ -208,7 +206,7 @@ export function ProgressSheet() {
                       className="group flex w-full items-center gap-2.5 border-b border-border/60 px-1 py-2.5 text-left text-[13px] outline-none transition-colors hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
                     >
                       <CircleCheckBig
-                        className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400"
+                        className="size-3.5 shrink-0 text-foreground"
                         strokeWidth={2.25}
                       />
                       <span className="min-w-0 flex-1 truncate font-medium">

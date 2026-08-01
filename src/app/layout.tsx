@@ -33,8 +33,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   // No maximumScale/userScalable cap — pinch-zoom stays available.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f6fafb" },
-    { media: "(prefers-color-scheme: dark)", color: "#0c1a1f" },
+    { media: "(prefers-color-scheme: light)", color: "#f7f8f9" },
+    { media: "(prefers-color-scheme: dark)", color: "#0f1113" },
   ],
 };
 
@@ -50,7 +50,9 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="font-sans antialiased">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        {/* Dark is the design, not a preference — the light theme is kept as a
+            desaturated fallback for anyone who forces it. */}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <AuthProvider>
             <ProgressProvider>
               <TooltipProvider delayDuration={200}>{children}</TooltipProvider>

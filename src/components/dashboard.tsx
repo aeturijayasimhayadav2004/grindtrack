@@ -31,17 +31,19 @@ export function Dashboard() {
       {/* Atmosphere layer: mesh wash, dot grid, and two drifting shapes. */}
       <div className="mesh pointer-events-none absolute inset-0" aria-hidden />
       <div className="dotgrid pointer-events-none absolute inset-0 opacity-60" aria-hidden />
+      {/* Two slow-drifting light sources. At this alpha they never read as
+          shapes — they just keep the large empty field from going dead flat. */}
       <div
-        className="animate-drift pointer-events-none absolute -right-24 top-10 size-72 rounded-full opacity-25"
+        className="animate-drift pointer-events-none absolute -right-24 top-10 size-72 rounded-full opacity-[0.07]"
         style={{
-          background: "radial-gradient(circle, var(--hot), transparent 68%)",
+          background: "radial-gradient(circle, var(--foreground), transparent 68%)",
         }}
         aria-hidden
       />
       <div
-        className="animate-drift pointer-events-none absolute -left-20 bottom-0 size-80 rounded-full opacity-20"
+        className="animate-drift pointer-events-none absolute -left-20 bottom-0 size-80 rounded-full opacity-[0.05]"
         style={{
-          background: "radial-gradient(circle, var(--primary), transparent 68%)",
+          background: "radial-gradient(circle, var(--foreground), transparent 68%)",
           animationDelay: "-6s",
         }}
         aria-hidden
@@ -72,7 +74,7 @@ export function Dashboard() {
               <button
                 type="button"
                 onClick={jumpToRandom}
-                className="ring-sweep group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-[oklch(0.16_0.04_210)] outline-none transition-all hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98]"
+                className="ring-sweep group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold text-[oklch(0.17_0.008_250)] outline-none transition-all hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.98]"
               >
                 <Dices className="size-4 transition-transform duration-300 group-hover:rotate-180" />
                 Random question

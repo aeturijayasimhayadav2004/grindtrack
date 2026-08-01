@@ -5,8 +5,12 @@ import { cn } from "@/lib/utils";
  *
  * There are no logo assets in the dataset and fetching them from a third party
  * would leak which companies you browse, so each mark is derived from the slug
- * instead: same company always gets the same hue, and 656 of them spread evenly
- * around the wheel.
+ * instead: same company always gets the same tile, every time.
+ *
+ * This used to spread 656 companies around the full hue wheel, which made the
+ * sidebar the loudest surface in the app. The marks now vary on luminance
+ * within a single graphite hue — still enough separation to navigate by shape
+ * and weight, without turning the rail into a paint chart.
  */
 
 const SIZES = {
@@ -17,14 +21,21 @@ const SIZES = {
 
 export type CompanyMarkSize = keyof typeof SIZES;
 
-function hueFor(slug: string): number {
+// The single hue the whole interface is built on.
+const HUE = 250;
+// Tiles stay in a mid band: dark enough that bone initials clear 4.5:1, light
+// enough to read as a raised chip on the near-black background.
+const TONE_FLOOR = 0.34;
+const TONE_RANGE = 0.16;
+
+function hashFor(slug: string): number {
   // FNV-ish rolling hash — cheap, stable, and well spread for short strings.
   let h = 2166136261;
   for (let i = 0; i < slug.length; i++) {
     h ^= slug.charCodeAt(i);
     h = Math.imul(h, 16777619);
   }
-  return (h >>> 0) % 360;
+  return h >>> 0;
 }
 
 export function companyInitials(name: string): string {
@@ -45,23 +56,25 @@ export function CompanyMark({
   size?: CompanyMarkSize;
   className?: string;
 }) {
-  const hue = hueFor(slug);
+  const hash = hashFor(slug);
+  const tone = TONE_FLOOR + ((hash % 97) / 96) * TONE_RANGE;
+  // A second, independent draw on the light angle so two companies that land
+  // on a similar tone still catch the light differently.
+  const angle = 110 + (((hash >>> 7) % 5) * 15);
 
   return (
     <span
       aria-hidden
       className={cn(
         "grid shrink-0 place-items-center font-mono font-bold leading-none tracking-tight",
+        "ring-1 ring-inset ring-white/[0.06]",
         SIZES[size],
         className,
       )}
       style={{
-        backgroundImage: `linear-gradient(140deg, oklch(0.78 0.16 ${hue}), oklch(0.58 0.2 ${
-          (hue + 48) % 360
-        }))`,
-        // Dark ink rather than white: at these chroma levels white drops below
-        // 4.5:1 on the yellow/lime part of the wheel, dark ink never does.
-        color: `oklch(0.21 0.06 ${hue})`,
+        backgroundImage: `linear-gradient(${angle}deg, oklch(${(tone + 0.09).toFixed(3)} 0.007 ${HUE}), oklch(${(tone - 0.05).toFixed(3)} 0.006 ${HUE}))`,
+        // Bone on a mid-graphite chip clears 4.5:1 across the whole tone band.
+        color: "oklch(0.968 0.003 250)",
       }}
     >
       {companyInitials(name)}

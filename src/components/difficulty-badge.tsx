@@ -1,13 +1,14 @@
 import { cn } from "@/lib/utils";
 import type { Difficulty } from "@/lib/types";
 
-// Tint + inset ring rather than a flat pill: the ring keeps the tag legible
-// against both the bone and ink backgrounds without raising the fill contrast.
+// A luminance ladder, not three hues. Easy sits back as an outline, Medium
+// takes a low fill, Hard inverts to solid ink — so difficulty climbs toward
+// the eye. Everything derives from the foreground token, which means both
+// themes are covered without a single dark: variant.
 const STYLES: Record<Difficulty, string> = {
-  Easy: "bg-green-100 text-green-800 ring-green-700/20 dark:bg-green-900/30 dark:text-green-400 dark:ring-green-400/25",
-  Medium:
-    "bg-amber-100 text-amber-800 ring-amber-700/20 dark:bg-amber-900/30 dark:text-amber-400 dark:ring-amber-400/25",
-  Hard: "bg-red-100 text-red-800 ring-red-700/20 dark:bg-red-900/30 dark:text-red-400 dark:ring-red-400/25",
+  Easy: "bg-transparent font-medium text-muted-foreground ring-border",
+  Medium: "bg-foreground/[0.09] font-semibold text-foreground/85 ring-foreground/15",
+  Hard: "bg-foreground font-bold text-background ring-transparent",
 };
 
 export function DifficultyBadge({

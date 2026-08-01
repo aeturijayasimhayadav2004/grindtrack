@@ -51,13 +51,13 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "recent-complete", label: "Recently done" },
 ];
 
-// Each toggle wears its own difficulty colour when active, so the filter state
-// is readable at a glance instead of being three identical grey chips.
+// Active toggles climb the same luminance ladder the badges use, so the filter
+// row and the Level column speak one language. An inactive toggle is an
+// outline; an active one is a fill that gets heavier with difficulty.
 const DIFFICULTY_TOGGLE: Record<Difficulty, string> = {
-  Easy: "bg-green-100 text-green-800 ring-green-700/25 dark:bg-green-900/35 dark:text-green-300 dark:ring-green-400/25",
-  Medium:
-    "bg-amber-100 text-amber-800 ring-amber-700/25 dark:bg-amber-900/35 dark:text-amber-300 dark:ring-amber-400/25",
-  Hard: "bg-red-100 text-red-800 ring-red-700/25 dark:bg-red-900/35 dark:text-red-300 dark:ring-red-400/25",
+  Easy: "bg-foreground/[0.07] text-foreground ring-foreground/15",
+  Medium: "bg-foreground/[0.15] text-foreground ring-foreground/25",
+  Hard: "bg-foreground text-background ring-transparent",
 };
 
 const DEFAULT_DIFFICULTIES = ALL_DIFFICULTIES;
