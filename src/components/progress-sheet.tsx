@@ -124,7 +124,7 @@ export function ProgressSheet() {
             type="button"
             onClick={exportCsv}
             disabled={stats.completed + stats.attempted === 0}
-            className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-sm border border-border px-2.5 py-1.5 text-[12px] font-medium outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40"
+            className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-sm border border-border px-3 py-2 text-[12px] font-medium outline-none transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40 sm:px-2.5 sm:py-1.5"
           >
             <Download className="size-3.5" />
             Export CSV

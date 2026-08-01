@@ -308,8 +308,15 @@ export function QuestionTable({
 
       {/* Sticky control rail — hairlines, no card. */}
       <div className="sticky top-0 z-20 border-y border-border bg-background/85 backdrop-blur-md">
-        <div className="flex flex-wrap items-center gap-2 px-4 py-2.5 sm:px-7">
-          <div className="flex items-center gap-1" role="group" aria-label="Filter by difficulty">
+        {/* Below sm the controls stack into three full-width rows. The two
+            wrapper divs go display:contents at sm, so from there up this is
+            the same single wrapping flex row it has always been. */}
+        <div className="flex flex-wrap items-center gap-2 px-3 py-2 sm:px-7 sm:py-2.5">
+          <div
+            className="flex w-full items-center gap-1 sm:w-auto"
+            role="group"
+            aria-label="Filter by difficulty"
+          >
             {ALL_DIFFICULTIES.map((d) => {
               const on = difficulties.includes(d);
               return (
@@ -319,7 +326,7 @@ export function QuestionTable({
                   aria-pressed={on}
                   onClick={() => toggleDifficulty(d)}
                   className={cn(
-                    "rounded-sm px-2.5 py-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.06em] outline-none ring-1 ring-inset transition-all focus-visible:ring-2 focus-visible:ring-ring",
+                    "flex-1 rounded-sm px-2.5 py-2 font-mono text-[11px] font-medium uppercase tracking-[0.06em] outline-none ring-1 ring-inset transition-all focus-visible:ring-2 focus-visible:ring-ring sm:flex-none sm:py-1.5",
                     on
                       ? DIFFICULTY_TOGGLE[d]
                       : "text-muted-foreground/70 ring-border hover:bg-accent/50 hover:text-foreground",
@@ -333,81 +340,87 @@ export function QuestionTable({
 
           <span className="mx-1 hidden h-5 w-px bg-border sm:block" aria-hidden />
 
-          <Select value={timeframe} onValueChange={(v) => setTimeframe(v as TimeframeSlug)}>
-            <SelectTrigger
-              size="sm"
-              aria-label="Frequency window"
-              className="h-8 w-[176px] gap-1.5 rounded-sm"
-            >
-              <span className="label-micro shrink-0">Window</span>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {TIMEFRAME_OPTIONS.map((t) => (
-                <SelectItem key={t} value={t}>
-                  {TIMEFRAME_LABELS[t]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex w-full items-center gap-2 sm:contents">
+            <Select value={timeframe} onValueChange={(v) => setTimeframe(v as TimeframeSlug)}>
+              <SelectTrigger
+                size="sm"
+                aria-label="Frequency window"
+                className="h-9 min-w-0 flex-1 gap-1.5 rounded-sm sm:h-8 sm:w-[176px] sm:flex-none"
+              >
+                <span className="label-micro shrink-0">Window</span>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {TIMEFRAME_OPTIONS.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {TIMEFRAME_LABELS[t]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Select
-            value={statusFilter}
-            onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}
-          >
-            <SelectTrigger
-              size="sm"
-              aria-label="Filter by status"
-              className="h-8 w-[168px] gap-1.5 rounded-sm"
+            <Select
+              value={statusFilter}
+              onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}
             >
-              <span className="label-micro shrink-0">Status</span>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {STATUS_OPTIONS.map((s) => (
-                <SelectItem key={s.value} value={s.value}>
-                  {s.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+              <SelectTrigger
+                size="sm"
+                aria-label="Filter by status"
+                className="h-9 min-w-0 flex-1 gap-1.5 rounded-sm sm:h-8 sm:w-[168px] sm:flex-none"
+              >
+                <span className="label-micro shrink-0">Status</span>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {STATUS_OPTIONS.map((s) => (
+                  <SelectItem key={s.value} value={s.value}>
+                    {s.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-          <input
-            ref={searchRef}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") {
-                setSearch("");
-                e.currentTarget.blur();
-              }
-            }}
-            placeholder="Search titles…  /"
-            aria-label="Search this company's questions"
-            aria-keyshortcuts="/"
-            className="h-8 min-w-[160px] flex-1 rounded-sm border border-input bg-background px-2.5 text-base outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:ring-2 focus-visible:ring-ring/25 sm:max-w-[260px] sm:text-sm"
-          />
+          <div className="flex w-full items-center gap-2 sm:contents">
+            <input
+              ref={searchRef}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  setSearch("");
+                  e.currentTarget.blur();
+                }
+              }}
+              placeholder="Search titles…  /"
+              aria-label="Search this company's questions"
+              aria-keyshortcuts="/"
+              // text-base below sm: anything smaller and iOS Safari zooms the
+              // page in on focus, then leaves it scaled.
+              className="h-9 min-w-0 flex-1 rounded-sm border border-input bg-background px-2.5 text-base outline-none transition-colors placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:ring-2 focus-visible:ring-ring/25 sm:h-8 sm:min-w-[160px] sm:max-w-[260px] sm:text-sm"
+            />
 
-          <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
-            <SelectTrigger
-              size="sm"
-              aria-label="Sort questions"
-              className="h-8 w-[188px] gap-1.5 rounded-sm sm:ml-auto"
-            >
-              <span className="label-micro shrink-0">Sort</span>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {SORT_OPTIONS.map((s) => (
-                <SelectItem key={s.value} value={s.value}>
-                  {s.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
+              <SelectTrigger
+                size="sm"
+                aria-label="Sort questions"
+                className="h-9 min-w-0 flex-1 gap-1.5 rounded-sm sm:ml-auto sm:h-8 sm:w-[188px] sm:flex-none"
+              >
+                <span className="label-micro shrink-0">Sort</span>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {SORT_OPTIONS.map((s) => (
+                  <SelectItem key={s.value} value={s.value}>
+                    {s.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 border-t border-border/60 px-4 py-1.5 sm:px-7">
+        <div className="flex items-center gap-2 border-t border-border/60 px-3 py-1.5 sm:px-7">
           <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
             Showing <span className="text-foreground">{sorted.length.toLocaleString()}</span> of{" "}
             <span className="text-foreground">{base.length.toLocaleString()}</span>
@@ -424,19 +437,23 @@ export function QuestionTable({
         </div>
       </div>
 
-      <div className="px-4 pb-16 sm:px-7">
+      <div className="px-3 pb-16 sm:px-7">
         <Table className="border-separate border-spacing-0">
           <TableHeader>
+            {/* Columns drop out as the viewport narrows — the desktop sidebar
+                claims 18rem from md up, so the widest set only comes back at
+                lg. Everything hidden here reappears in the per-row meta line
+                below the title, so no data is lost on a phone. */}
             <TableRow className="border-0 hover:bg-transparent">
-              <HeadCell className="w-10 pl-0 text-right">#</HeadCell>
-              <HeadCell className="w-[76px]">Status</HeadCell>
+              <HeadCell className="hidden w-10 pl-0 text-right lg:table-cell">#</HeadCell>
+              <HeadCell className="w-[84px] pl-0 sm:w-[76px] sm:pl-2">Status</HeadCell>
               <HeadCell>Title</HeadCell>
-              <HeadCell className="w-[92px]">Level</HeadCell>
-              <HeadCell className="w-[150px]">Frequency</HeadCell>
+              <HeadCell className="hidden w-[92px] sm:table-cell">Level</HeadCell>
+              <HeadCell className="hidden w-[150px] lg:table-cell">Frequency</HeadCell>
               {hasTopics ? (
-                <HeadCell className="w-48">Topics</HeadCell>
+                <HeadCell className="hidden w-48 lg:table-cell">Topics</HeadCell>
               ) : (
-                <HeadCell className="w-[92px] pr-0 text-right">Acc.</HeadCell>
+                <HeadCell className="hidden w-[92px] pr-0 text-right lg:table-cell">Acc.</HeadCell>
               )}
             </TableRow>
           </TableHeader>
@@ -444,10 +461,10 @@ export function QuestionTable({
             {loading ? (
               Array.from({ length: 10 }).map((_, i) => (
                 <TableRow key={i} className="border-0 hover:bg-transparent">
-                  <BodyCell className="pl-0">
+                  <BodyCell className="hidden pl-0 lg:table-cell">
                     <Skeleton className="ml-auto h-3 w-4" />
                   </BodyCell>
-                  <BodyCell>
+                  <BodyCell className="pl-0 sm:pl-2">
                     <div className="flex items-center gap-1">
                       <Skeleton className="size-6 rounded-full" />
                       <Skeleton className="size-6 rounded-sm" />
@@ -456,13 +473,13 @@ export function QuestionTable({
                   <BodyCell>
                     <Skeleton className="h-3.5" style={{ width: `${45 + ((i * 37) % 40)}%` }} />
                   </BodyCell>
-                  <BodyCell>
+                  <BodyCell className="hidden sm:table-cell">
                     <Skeleton className="h-4 w-14 rounded-[3px]" />
                   </BodyCell>
-                  <BodyCell>
+                  <BodyCell className="hidden lg:table-cell">
                     <Skeleton className="h-3 w-24" />
                   </BodyCell>
-                  <BodyCell className="pr-0">
+                  <BodyCell className="hidden pr-0 lg:table-cell">
                     <Skeleton className="ml-auto h-3 w-10" />
                   </BodyCell>
                 </TableRow>
@@ -515,13 +532,13 @@ export function QuestionTable({
                     )}
                     style={i < STAGGER_ROWS ? { animationDelay: `${i * 22}ms` } : undefined}
                   >
-                    <BodyCell className="pl-0 text-right">
+                    <BodyCell className="hidden pl-0 text-right lg:table-cell">
                       <span className="font-mono text-[11px] tabular-nums text-muted-foreground/50">
                         {String(i + 1).padStart(indexWidth, "0")}
                       </span>
                     </BodyCell>
 
-                    <BodyCell>
+                    <BodyCell className="pl-0 align-top sm:pl-2 sm:align-middle">
                       <div className="flex items-center gap-0.5">
                         <StatusIcon
                           status={status}
@@ -544,24 +561,43 @@ export function QuestionTable({
                         )}
                       >
                         <span>{q.title}</span>
-                        <ExternalLink className="mt-0.5 size-3 shrink-0 text-transparent transition-colors group-hover:text-muted-foreground" />
+                        {/* Touch devices never fire hover, so the affordance
+                            stays faintly visible there and only hides once
+                            there's a pointer to reveal it. */}
+                        <ExternalLink className="mt-0.5 size-3 shrink-0 text-muted-foreground/40 transition-colors group-hover:text-muted-foreground sm:text-transparent" />
                       </a>
+
+                      {/* Stand-in for whichever columns the current width has
+                          dropped. Mirrors them exactly, so nothing is only
+                          reachable on a wide screen. */}
+                      <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 lg:hidden">
+                        <span className="sm:hidden">
+                          <DifficultyBadge difficulty={q.difficulty} />
+                        </span>
+                        <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
+                          freq {freq.toFixed(1)}
+                        </span>
+                        <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
+                          {q.acceptanceRate.toFixed(1)}% acc
+                        </span>
+                        {hasTopics && q.topics.length > 0 && <TopicsCell topics={q.topics} />}
+                      </div>
                     </BodyCell>
 
-                    <BodyCell>
+                    <BodyCell className="hidden sm:table-cell">
                       <DifficultyBadge difficulty={q.difficulty} />
                     </BodyCell>
 
-                    <BodyCell>
+                    <BodyCell className="hidden lg:table-cell">
                       <FrequencyMeter value={freq} />
                     </BodyCell>
 
                     {hasTopics ? (
-                      <BodyCell className="whitespace-normal">
+                      <BodyCell className="hidden whitespace-normal lg:table-cell">
                         <TopicsCell topics={q.topics} />
                       </BodyCell>
                     ) : (
-                      <BodyCell className="pr-0 text-right">
+                      <BodyCell className="hidden pr-0 text-right lg:table-cell">
                         <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
                           {q.acceptanceRate.toFixed(1)}%
                         </span>
