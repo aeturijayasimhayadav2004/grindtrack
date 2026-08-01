@@ -51,13 +51,14 @@ const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: "recent-complete", label: "Recently done" },
 ];
 
-// Active toggles climb the same luminance ladder the badges use, so the filter
-// row and the Level column speak one language. An inactive toggle is an
-// outline; an active one is a fill that gets heavier with difficulty.
+// Active toggles wear the same hue as the badge they filter to, so the control
+// row and the Level column speak one language. Inactive stays a bare outline —
+// the colour only appears once the filter is doing something.
 const DIFFICULTY_TOGGLE: Record<Difficulty, string> = {
-  Easy: "bg-foreground/[0.07] text-foreground ring-foreground/15",
-  Medium: "bg-foreground/[0.15] text-foreground ring-foreground/25",
-  Hard: "bg-foreground text-background ring-transparent",
+  Easy: "bg-emerald-500/15 text-emerald-700 ring-emerald-600/30 dark:text-emerald-300 dark:ring-emerald-400/30",
+  Medium:
+    "bg-amber-500/16 text-amber-700 ring-amber-600/30 dark:text-amber-300 dark:ring-amber-400/30",
+  Hard: "bg-rose-500/16 text-rose-700 ring-rose-600/30 dark:text-rose-300 dark:ring-rose-400/35",
 };
 
 const DEFAULT_DIFFICULTIES = ALL_DIFFICULTIES;

@@ -31,19 +31,20 @@ export function Dashboard() {
       {/* Atmosphere layer: mesh wash, dot grid, and two drifting shapes. */}
       <div className="mesh pointer-events-none absolute inset-0" aria-hidden />
       <div className="dotgrid pointer-events-none absolute inset-0 opacity-60" aria-hidden />
-      {/* Two slow-drifting light sources. At this alpha they never read as
-          shapes — they just keep the large empty field from going dead flat. */}
+      {/* Two slow-drifting light sources, one per support accent. Kept well
+          under half the alpha the original pair ran at, so they colour the
+          field without ever reading as shapes on it. */}
       <div
-        className="animate-drift pointer-events-none absolute -right-24 top-10 size-72 rounded-full opacity-[0.07]"
+        className="animate-drift pointer-events-none absolute -right-24 top-10 size-72 rounded-full opacity-[0.13]"
         style={{
-          background: "radial-gradient(circle, var(--foreground), transparent 68%)",
+          background: "radial-gradient(circle, var(--hot), transparent 68%)",
         }}
         aria-hidden
       />
       <div
-        className="animate-drift pointer-events-none absolute -left-20 bottom-0 size-80 rounded-full opacity-[0.05]"
+        className="animate-drift pointer-events-none absolute -left-20 bottom-0 size-80 rounded-full opacity-[0.11]"
         style={{
-          background: "radial-gradient(circle, var(--foreground), transparent 68%)",
+          background: "radial-gradient(circle, var(--primary), transparent 68%)",
           animationDelay: "-6s",
         }}
         aria-hidden

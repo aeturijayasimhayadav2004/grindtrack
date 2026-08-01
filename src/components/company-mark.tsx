@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
  * would leak which companies you browse, so each mark is derived from the slug
  * instead: same company always gets the same tile, every time.
  *
- * This used to spread 656 companies around the full hue wheel, which made the
- * sidebar the loudest surface in the app. The marks now vary on luminance
- * within a single graphite hue — still enough separation to navigate by shape
- * and weight, without turning the rail into a paint chart.
+ * The hue wheel is back — 656 companies still land on distinct tiles — but at
+ * roughly a third of the chroma it used to run at, and inside a fixed
+ * luminance band. The rail reads as tinted metal rather than as a paint chart,
+ * and no tile can outshout the row it sits in.
  */
 
 const SIZES = {
@@ -21,12 +21,13 @@ const SIZES = {
 
 export type CompanyMarkSize = keyof typeof SIZES;
 
-// The single hue the whole interface is built on.
-const HUE = 250;
-// Tiles stay in a mid band: dark enough that bone initials clear 4.5:1, light
-// enough to read as a raised chip on the near-black background.
-const TONE_FLOOR = 0.34;
-const TONE_RANGE = 0.16;
+// Tiles stay in a mid luminance band: dark enough that bone initials clear
+// 4.5:1 on every hue, light enough to read as a raised chip on graphite.
+const TONE_FLOOR = 0.36;
+const TONE_RANGE = 0.14;
+// Well under the 0.16-0.2 the original marks used. Enough to tell two
+// companies apart, not enough to compete with the difficulty badges.
+const CHROMA = 0.062;
 
 function hashFor(slug: string): number {
   // FNV-ish rolling hash — cheap, stable, and well spread for short strings.
@@ -57,6 +58,7 @@ export function CompanyMark({
   className?: string;
 }) {
   const hash = hashFor(slug);
+  const hue = hash % 360;
   const tone = TONE_FLOOR + ((hash % 97) / 96) * TONE_RANGE;
   // A second, independent draw on the light angle so two companies that land
   // on a similar tone still catch the light differently.
@@ -72,9 +74,11 @@ export function CompanyMark({
         className,
       )}
       style={{
-        backgroundImage: `linear-gradient(${angle}deg, oklch(${(tone + 0.09).toFixed(3)} 0.007 ${HUE}), oklch(${(tone - 0.05).toFixed(3)} 0.006 ${HUE}))`,
-        // Bone on a mid-graphite chip clears 4.5:1 across the whole tone band.
-        color: "oklch(0.968 0.003 250)",
+        backgroundImage: `linear-gradient(${angle}deg, oklch(${(tone + 0.09).toFixed(3)} ${CHROMA} ${hue}), oklch(${(tone - 0.05).toFixed(3)} ${CHROMA * 0.85} ${(hue + 34) % 360}))`,
+        // Bone initials, not dark ink: inside this tone band white clears
+        // 4.5:1 on every hue, including the yellow-green arc where the old
+        // brighter tiles could not.
+        color: "oklch(0.972 0.004 250)",
       }}
     >
       {companyInitials(name)}

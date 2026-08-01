@@ -71,10 +71,10 @@
     /* "Primary" is simply the darkest ink step — an emphasis level, not a
        colour. --hot and --zest survive as names so existing call sites keep
        working, but they are now just two rungs down the same ladder. */
-    --primary: oklch(0.3 0.01 250);
-    --primary-foreground: oklch(0.98 0.002 250);
-    --hot: oklch(0.45 0.008 250);
-    --zest: oklch(0.6 0.006 250);
+    --primary: oklch(0.55 0.11 195);
+    --primary-foreground: oklch(0.99 0.005 200);
+    --hot: oklch(0.56 0.14 25);
+    --zest: oklch(0.68 0.11 85);
 
     --secondary: oklch(0.945 0.003 250);
     --secondary-foreground: oklch(0.28 0.008 250);
@@ -88,7 +88,7 @@
     --destructive-foreground: oklch(0.98 0.002 250);
     --border: oklch(0.888 0.004 250);
     --input: oklch(0.865 0.005 250);
-    --ring: oklch(0.4 0.01 250);
+    --ring: oklch(0.55 0.11 195);
 
     --chart-1: oklch(0.24 0.009 250);
     --chart-2: oklch(0.4 0.008 250);
@@ -98,21 +98,19 @@
 
     --sidebar: oklch(0.956 0.003 250);
     --sidebar-foreground: oklch(0.195 0.008 250);
-    --sidebar-primary: oklch(0.3 0.01 250);
-    --sidebar-primary-foreground: oklch(0.98 0.002 250);
-    --sidebar-accent: oklch(0.905 0.005 250);
-    --sidebar-accent-foreground: oklch(0.2 0.01 250);
+    --sidebar-primary: oklch(0.55 0.11 195);
+    --sidebar-primary-foreground: oklch(0.99 0.005 200);
+    --sidebar-accent: oklch(0.9 0.022 200);
+    --sidebar-accent-foreground: oklch(0.2 0.02 205);
     --sidebar-border: oklch(0.888 0.004 250);
-    --sidebar-ring: oklch(0.4 0.01 250);
+    --sidebar-ring: oklch(0.55 0.11 195);
 
     --grain-opacity: 0.24;
     --grain-blend: multiply;
     --dot-color: oklch(0.195 0.008 250 / 6%);
-    /* The mesh is now a light source, not a colour wash — three greys at
-       single-digit alpha, just enough to keep large fields from going flat. */
-    --mesh-a: oklch(0.35 0.01 250 / 7%);
-    --mesh-b: oklch(0.35 0.01 250 / 5%);
-    --mesh-c: oklch(0.35 0.01 250 / 4%);
+    --mesh-a: oklch(0.55 0.11 195 / 14%);
+    --mesh-b: oklch(0.56 0.14 25 / 9%);
+    --mesh-c: oklch(0.68 0.11 85 / 9%);
   }
 
   .dark {
@@ -126,12 +124,14 @@
     --popover: oklch(0.216 0.008 250);
     --popover-foreground: oklch(0.965 0.003 250);
 
-    /* Emphasis runs toward light here, the inverse of the light theme. Bone is
-       the loudest thing the interface can say. */
-    --primary: oklch(0.92 0.004 250);
-    --primary-foreground: oklch(0.17 0.008 250);
-    --hot: oklch(0.72 0.005 250);
-    --zest: oklch(0.82 0.004 250);
+    /* Colour is rationed, not banned. One lead accent plus two supports, all
+       held near half the chroma the original palette ran at, so they read as
+       lit metal on graphite rather than as paint. Surfaces and body text stay
+       achromatic — only things you can act on are allowed a hue. */
+    --primary: oklch(0.79 0.115 195);
+    --primary-foreground: oklch(0.17 0.02 200);
+    --hot: oklch(0.73 0.125 25);
+    --zest: oklch(0.84 0.105 85);
 
     --secondary: oklch(0.256 0.007 250);
     --secondary-foreground: oklch(0.95 0.003 250);
@@ -139,11 +139,11 @@
     --muted-foreground: oklch(0.685 0.006 250);
     --accent: oklch(0.302 0.008 250);
     --accent-foreground: oklch(0.97 0.003 250);
-    --destructive: oklch(0.66 0.075 25);
+    --destructive: oklch(0.68 0.17 25);
     --destructive-foreground: oklch(0.98 0.002 250);
     --border: oklch(0.85 0.01 250 / 12%);
     --input: oklch(0.85 0.01 250 / 16%);
-    --ring: oklch(0.85 0.006 250);
+    --ring: oklch(0.79 0.115 195);
 
     --chart-1: oklch(0.96 0.003 250);
     --chart-2: oklch(0.82 0.004 250);
@@ -155,19 +155,21 @@
        reads as a recess and the table is the lit surface. */
     --sidebar: oklch(0.128 0.006 250);
     --sidebar-foreground: oklch(0.955 0.003 250);
-    --sidebar-primary: oklch(0.92 0.004 250);
-    --sidebar-primary-foreground: oklch(0.17 0.008 250);
-    --sidebar-accent: oklch(0.272 0.008 250);
+    --sidebar-primary: oklch(0.79 0.115 195);
+    --sidebar-primary-foreground: oklch(0.17 0.02 200);
+    --sidebar-accent: oklch(0.272 0.014 210);
     --sidebar-accent-foreground: oklch(0.975 0.003 250);
     --sidebar-border: oklch(0.85 0.01 250 / 12%);
-    --sidebar-ring: oklch(0.85 0.006 250);
+    --sidebar-ring: oklch(0.79 0.115 195);
 
     --grain-opacity: 0.16;
     --grain-blend: overlay;
     --dot-color: oklch(0.9 0.006 250 / 6%);
-    --mesh-a: oklch(0.92 0.006 250 / 7%);
-    --mesh-b: oklch(0.92 0.006 250 / 5%);
-    --mesh-c: oklch(0.92 0.006 250 / 3%);
+    /* The mesh is where the accents get to be generous — large, soft and far
+       below the content, so they tint the field without competing with it. */
+    --mesh-a: oklch(0.79 0.115 195 / 14%);
+    --mesh-b: oklch(0.73 0.125 25 / 10%);
+    --mesh-c: oklch(0.84 0.105 85 / 7%);
   }
 
   * {
@@ -260,8 +262,8 @@
     background-image: linear-gradient(
       100deg,
       var(--foreground) 0%,
-      var(--foreground) 30%,
-      var(--muted-foreground) 100%
+      var(--foreground) 22%,
+      var(--primary) 100%
     );
     -webkit-background-clip: text;
     background-clip: text;
@@ -274,10 +276,9 @@
   .ring-sweep {
     background-image: linear-gradient(
       135deg,
-      oklch(0.99 0.002 250) 0%,
-      oklch(0.86 0.005 250) 38%,
-      oklch(0.66 0.007 250) 62%,
-      oklch(0.9 0.004 250) 100%
+      var(--zest) 0%,
+      var(--primary) 45%,
+      var(--hot) 100%
     );
   }
 

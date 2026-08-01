@@ -1,14 +1,15 @@
 import { cn } from "@/lib/utils";
 import type { Difficulty } from "@/lib/types";
 
-// A luminance ladder, not three hues. Easy sits back as an outline, Medium
-// takes a low fill, Hard inverts to solid ink — so difficulty climbs toward
-// the eye. Everything derives from the foreground token, which means both
-// themes are covered without a single dark: variant.
+// Hue carries the meaning again, but the weight ladder from the monochrome
+// pass stays: 500 for Easy through 700 for Hard. That redundancy is what keeps
+// the column readable in greyscale and under colour vision deficiency, where
+// the original green/amber/red alone failed.
 const STYLES: Record<Difficulty, string> = {
-  Easy: "bg-transparent font-medium text-muted-foreground ring-border",
-  Medium: "bg-foreground/[0.09] font-semibold text-foreground/85 ring-foreground/15",
-  Hard: "bg-foreground font-bold text-background ring-transparent",
+  Easy: "bg-emerald-500/12 font-medium text-emerald-700 ring-emerald-600/25 dark:text-emerald-300 dark:ring-emerald-400/25",
+  Medium:
+    "bg-amber-500/14 font-semibold text-amber-700 ring-amber-600/25 dark:text-amber-300 dark:ring-amber-400/25",
+  Hard: "bg-rose-500/14 font-bold text-rose-700 ring-rose-600/25 dark:text-rose-300 dark:ring-rose-400/30",
 };
 
 export function DifficultyBadge({
