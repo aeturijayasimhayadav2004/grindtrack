@@ -26,11 +26,14 @@ export function GlobalSearch() {
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
+      // A company page claims "/" for its own filter box first.
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
       const target = e.target as HTMLElement | null;
       const isTyping =
         !!target &&
         (target.tagName === "INPUT" ||
           target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
           target.isContentEditable);
       if (e.key === "/" && !isTyping) {
         e.preventDefault();

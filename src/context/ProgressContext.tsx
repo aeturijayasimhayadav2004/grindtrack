@@ -67,6 +67,11 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const emailRef = useRef<string | null>(email);
   emailRef.current = email;
 
+  // Tail of the write queue per question. Writes are full-row upserts, so they
+  // must land in the order they were made — otherwise an older write's retry
+  // can arrive after a newer one and leave the database behind the screen.
+  const queueRef = useRef(new Map<string, Promise<void>>());
+
   const commit = useCallback((next: ProgressMap) => {
     mapRef.current = next;
     setMapState(next);
@@ -122,7 +127,8 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      void (async () => {
+      const key = `${email}\u0000${questionId}`;
+      const run = async () => {
         const error = await upsertWithRetry({
           user_email: email,
           question_id: questionId,
@@ -152,7 +158,14 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
         }
 
         toast.error("Couldn't save to Supabase", { description: error });
-      })();
+      };
+
+      const queue = queueRef.current;
+      const tail = (queue.get(key) ?? Promise.resolve()).then(run, run);
+      queue.set(key, tail);
+      void tail.finally(() => {
+        if (queue.get(key) === tail) queue.delete(key);
+      });
     },
     [commit, email],
   );

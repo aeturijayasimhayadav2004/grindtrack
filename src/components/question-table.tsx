@@ -174,14 +174,19 @@ export function QuestionTable({
   const visible = useMemo(() => sorted.slice(0, visibleCount), [sorted, visibleCount]);
   const hasMore = visibleCount < sorted.length;
 
+  // `visible` changes on every status click and every batch load, so without
+  // this the page would yank back to the highlighted row each time.
+  const scrolledToRef = useRef<string | null>(null);
+
   useEffect(() => {
-    if (!highlightId || loading) return;
+    if (!highlightId || loading || scrolledToRef.current === highlightId) return;
     const row = rowRefs.current.get(highlightId);
     if (!row) return;
+    scrolledToRef.current = highlightId;
     row.scrollIntoView({ behavior: "smooth", block: "center" });
     setFlashId(highlightId);
-    const t = setTimeout(() => setFlashId(null), 1600);
-    return () => clearTimeout(t);
+    // Cleared by timer only — a later `visible` change must not cut the flash short.
+    setTimeout(() => setFlashId((id) => (id === highlightId ? null : id)), 1600);
     // Keyed on `visible`, not `sorted`: the row only exists once the batch
     // window has grown far enough to render it.
   }, [highlightId, visible, loading]);
@@ -231,8 +236,11 @@ export function QuestionTable({
       searchRef.current?.focus();
       searchRef.current?.select();
     }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    // Capture phase so this runs before GlobalSearch's document listener, which
+    // backs off once it sees defaultPrevented. Otherwise one "/" would open the
+    // global dialog and focus this box at the same time.
+    window.addEventListener("keydown", onKeyDown, true);
+    return () => window.removeEventListener("keydown", onKeyDown, true);
   }, []);
 
   function toggleDifficulty(d: Difficulty) {

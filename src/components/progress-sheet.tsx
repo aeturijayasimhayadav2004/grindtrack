@@ -105,7 +105,8 @@ export function ProgressSheet() {
     a.href = url;
     a.download = `grindtrack-progress-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
-    URL.revokeObjectURL(url);
+    // Deferred: revoking in the same tick can cancel the download in Firefox/Safari.
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   }
 
   return (
