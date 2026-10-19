@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from "react";
 import { useProgressContext } from "@/context/ProgressContext";
-import { questions } from "@/lib/data";
+import { getQuestionById, totalQuestionCount } from "@/lib/data";
 import type { ProgressMap, ProgressStatus } from "@/lib/types";
 
 const STATUS_CYCLE: ProgressStatus[] = ["not-started", "attempted", "completed"];
@@ -42,11 +42,14 @@ export function useProgress() {
   const stats = useMemo(() => {
     let completed = 0;
     let attempted = 0;
-    for (const entry of Object.values(map)) {
+    for (const [id, entry] of Object.entries(map)) {
+      // A row can outlive its question when the snapshot is refreshed; counting
+      // it would push "not started" below zero.
+      if (!getQuestionById(id)) continue;
       if (entry.status === "completed") completed++;
       else if (entry.status === "attempted") attempted++;
     }
-    const total = questions.length;
+    const total = totalQuestionCount;
     return { completed, attempted, notStarted: total - completed - attempted, total };
   }, [map]);
 

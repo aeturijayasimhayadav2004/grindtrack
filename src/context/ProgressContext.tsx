@@ -4,10 +4,18 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import type { ProgressInsert, ProgressRow } from "@/lib/database.types";
-import { fromDbStatus, isSupabaseConfigured, supabase, toDbStatus } from "@/lib/supabase";
+import {
+  fromDbStatus,
+  isSupabaseConfigured,
+  requestSignal,
+  supabase,
+  toDbStatus,
+} from "@/lib/supabase";
 import type { ProgressEntry, ProgressMap, ProgressStatus } from "@/lib/types";
 
 const RETRY_DELAY_MS = 2000;
+// Matches PostgREST's default max-rows, so a typical account loads in one request.
+const PAGE_SIZE = 1000;
 
 interface ProgressContextValue {
   map: ProgressMap;
@@ -43,7 +51,10 @@ function sleep(ms: number) {
  */
 async function upsertWithRetry(row: ProgressInsert): Promise<string | null> {
   const attempt = () =>
-    supabase.from("progress").upsert(row, { onConflict: "user_email,question_id" });
+    supabase
+      .from("progress")
+      .upsert(row, { onConflict: "user_email,question_id" })
+      .abortSignal(requestSignal());
 
   const first = await attempt();
   if (!first.error) return null;
@@ -51,6 +62,33 @@ async function upsertWithRetry(row: ProgressInsert): Promise<string | null> {
   await sleep(RETRY_DELAY_MS);
   const second = await attempt();
   return second.error ? second.error.message : null;
+}
+
+/**
+ * Every row for one account, or null on any failure. PostgREST caps a response
+ * (1000 rows by default), so one plain select would silently drop progress
+ * past the cap. The first page asks for the exact count; further pages are
+ * fetched only when the count says rows are still missing.
+ */
+async function fetchAllProgress(email: string): Promise<ProgressRow[] | null> {
+  const rows: ProgressRow[] = [];
+  let total = Infinity;
+
+  while (rows.length < total) {
+    const { data, error, count } = await supabase
+      .from("progress")
+      .select("*", { count: rows.length === 0 ? "exact" : undefined })
+      .eq("user_email", email)
+      .order("question_id")
+      .range(rows.length, rows.length + PAGE_SIZE - 1)
+      .abortSignal(requestSignal());
+
+    if (error) return null;
+    if (count != null) total = count;
+    if (!data || data.length === 0) break; // rows deleted mid-read; keep what we have
+    rows.push(...data);
+  }
+  return rows;
 }
 
 export function ProgressProvider({ children }: { children: React.ReactNode }) {
@@ -89,15 +127,15 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const { data, error } = await supabase.from("progress").select("*").eq("user_email", email);
+    const rows = await fetchAllProgress(email);
     if (emailRef.current !== email) return; // signed out or switched mid-flight
 
-    if (error) {
+    if (!rows) {
       setOffline(true);
       setLoading(false);
       return;
     }
-    commit(rowsToMap(data ?? []));
+    commit(rowsToMap(rows));
     setOffline(false);
     setLoading(false);
   }, [commit, email]);

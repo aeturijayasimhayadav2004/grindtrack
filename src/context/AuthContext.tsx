@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { isSupabaseConfigured, supabase } from "@/lib/supabase";
+import { isSupabaseConfigured, requestSignal, supabase } from "@/lib/supabase";
 
 const STORAGE_KEY = "grindtrack-account-email";
 
@@ -86,11 +86,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (problem) throw new Error(problem);
 
     // Register the account. This table is bookkeeping only — progress rows carry
-    // the email themselves — so a failure here must not block sign-in.
+    // the email themselves — so neither a failure nor a slow response may block
+    // sign-in. Fire and forget.
     if (isSupabaseConfigured) {
-      await supabase
+      void supabase
         .from("users")
-        .upsert({ email: next, last_seen_at: new Date().toISOString() }, { onConflict: "email" });
+        .upsert({ email: next, last_seen_at: new Date().toISOString() }, { onConflict: "email" })
+        .abortSignal(requestSignal())
+        .then(
+          () => undefined,
+          () => undefined,
+        );
     }
 
     try {

@@ -8,6 +8,8 @@ import { useProgress } from "@/hooks/useProgress";
 import { cn } from "@/lib/utils";
 
 const DEBOUNCE_MS = 800;
+// Plenty for working notes; stops a paste of a whole file becoming one giant row.
+const MAX_NOTE_LENGTH = 10_000;
 
 export function QuestionNotes({ questionId, title }: { questionId: string; title: string }) {
   const { getNotes, setNotes } = useProgress();
@@ -70,6 +72,7 @@ export function QuestionNotes({ questionId, title }: { questionId: string; title
         <p className="mb-2 truncate text-xs font-medium text-muted-foreground">{title}</p>
         <Textarea
           autoFocus
+          maxLength={MAX_NOTE_LENGTH}
           value={draft}
           onChange={(e) => handleChange(e.target.value)}
           onBlur={flush}

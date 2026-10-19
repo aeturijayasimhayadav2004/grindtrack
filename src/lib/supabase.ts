@@ -22,6 +22,20 @@ export const supabase = createClient<Database>(
   { auth: { persistSession: false, autoRefreshToken: false } },
 );
 
+const REQUEST_TIMEOUT_MS = 15_000;
+
+/**
+ * Deadline for a single Supabase request. supabase-js has no timeout of its
+ * own, so without this a stalled connection leaves the UI loading forever.
+ */
+export function requestSignal(): AbortSignal {
+  if ("timeout" in AbortSignal) return AbortSignal.timeout(REQUEST_TIMEOUT_MS);
+  // Safari < 16 lacks AbortSignal.timeout.
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  return controller.signal;
+}
+
 const STATUS_TO_DB: Record<ProgressStatus, ProgressRowStatus> = {
   "not-started": "not_started",
   attempted: "attempted",

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useAuth, validateEmail } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { loadCatalog } from "@/lib/data";
 
 export function LoginForm() {
   const router = useRouter();
@@ -12,6 +13,12 @@ export function LoginForm() {
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // Start the question download while the user types, so the tracker opens
+  // without a loading step. A failure here is retried by <CatalogGate>.
+  useEffect(() => {
+    loadCatalog().catch(() => undefined);
+  }, []);
 
   // Already signed in — don't sit on a login page you can't use.
   useEffect(() => {

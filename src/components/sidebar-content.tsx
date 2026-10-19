@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { CompanyMark } from "@/components/company-mark";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useProgress } from "@/hooks/useProgress";
-import { companies, getCompanyQuestions } from "@/lib/data";
+import { companies, getQuestionById } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 export function SidebarContent({
@@ -19,15 +19,16 @@ export function SidebarContent({
   const { getAllProgress } = useProgress();
   const progressMap = getAllProgress();
 
+  // Walks the user's progress rows rather than every question, so a status
+  // click costs O(rows touched), not O(17k questions).
   const companyProgress = useMemo(() => {
     const result = new Map<string, { completed: number; total: number }>();
-    for (const c of companies) {
-      const qs = getCompanyQuestions(c.slug);
-      let completed = 0;
-      for (const q of qs) {
-        if (progressMap[q.id]?.status === "completed") completed++;
-      }
-      result.set(c.slug, { completed, total: qs.length });
+    for (const c of companies) result.set(c.slug, { completed: 0, total: c.questionCount });
+    for (const [id, entry] of Object.entries(progressMap)) {
+      if (entry.status !== "completed") continue;
+      const company = getQuestionById(id)?.company;
+      const p = company ? result.get(company) : undefined;
+      if (p) p.completed++;
     }
     return result;
   }, [progressMap]);

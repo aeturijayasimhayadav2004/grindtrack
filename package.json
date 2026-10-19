@@ -8,7 +8,8 @@
     "build:clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && next build",
     "start": "next start",
     "lint": "next lint",
-    "build:data": "tsx scripts/build-data.ts"
+    "build:data": "tsx scripts/build-data.ts",
+    "build:catalog": "node scripts/catalog.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.111.0",

@@ -41,6 +41,14 @@ The app expects two tables:
 are committed to the repo**. They are a locked snapshot, so builds are
 reproducible and need no network access to a third-party repo.
 
+The browser never downloads `questions.json` itself. On every `next dev` /
+`next build`, `next.config.mjs` runs [`scripts/catalog.mjs`](scripts/catalog.mjs),
+which writes a normalized, content-hashed copy to `public/data/catalog-<hash>.json`
+(~180 KB gzipped instead of a 6 MB JS bundle). The app fetches it once and the
+CDN caches it forever; a new snapshot gets a new hash, so there is no stale
+cache to bust. The build fails if decoding the catalog doesn't reproduce the
+snapshot exactly. `public/data/` is generated, so it is gitignored.
+
 To pull a fresher snapshot from upstream:
 
 ```bash
@@ -77,6 +85,7 @@ network call to the upstream repo happens during a deploy.
 | `npm run start` | Serve a production build |
 | `npm run lint` | ESLint |
 | `npm run build:data` | Regenerate the question snapshot from upstream |
+| `npm run build:catalog` | Regenerate the client catalog by hand (dev/build already do this) |
 
 ### Local builds are flaky on Windows
 

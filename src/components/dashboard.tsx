@@ -4,7 +4,7 @@ import { ArrowRight, Dices, Flame, Layers, ListChecks } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { CompanyMark } from "@/components/company-mark";
 import { useProgress } from "@/hooks/useProgress";
-import { companies, getRandomQuestion, questions } from "@/lib/data";
+import { companies, getRandomQuestion, totalQuestionCount } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 // A few recognisable names to seed the "jump straight in" strip.
@@ -23,6 +23,7 @@ export function Dashboard() {
 
   function jumpToRandom() {
     const q = getRandomQuestion();
+    if (!q) return;
     router.push(`/?company=${q.company}&highlight=${encodeURIComponent(q.id)}`);
   }
 
@@ -42,7 +43,7 @@ export function Dashboard() {
             </h1>
 
             <p className="mt-4 max-w-md text-pretty text-base leading-relaxed text-muted-foreground">
-              {questions.length.toLocaleString()} questions across{" "}
+              {totalQuestionCount.toLocaleString()} questions across{" "}
               {companies.length.toLocaleString()} companies, ranked by how often they actually
               show up.
             </p>
@@ -81,7 +82,7 @@ export function Dashboard() {
           <StatCard
             icon={ListChecks}
             label="Questions"
-            value={questions.length}
+            value={totalQuestionCount}
             tint="var(--hot)"
             delay={240}
           />
